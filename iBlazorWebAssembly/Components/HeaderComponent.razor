@@ -1,0 +1,28 @@
+@if (Visible)
+{
+    <FluentHeader 
+    Style="height: 600px; 
+    background-color: rgb(18, 24, 42); 
+    color: rgb(156, 42, 42); 
+    text-align: center;">
+        <div class="header-container">
+            <div class="avatar-section">
+                <div class="custom-square-avatar">
+                    <img src="/images/me.png" alt="User Name" />
+                </div>
+                <div class="user-info">
+                    <div class="user-name">埃稗司•梵趿司</div>
+                    <div class="user-id">AbysFantas</div>
+                </div>
+            </div>
+            <div class="admin-settings-container">
+                <AdminSettingsMenu />
+            </div>
+        </div>
+    </FluentHeader>
+}
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; } = true;
+}

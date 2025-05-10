@@ -1,0 +1,70 @@
+@page "/software"
+
+<PageTitle>软件</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+    <FluentCard>
+        <h1>软件中心</h1>
+        <p>这里是软件页面，您可以在这里找到各类推荐软件和工具。</p>
+    </FluentCard>
+
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12" Wrap="true">
+        <FluentCard Width="300px" Height="200px">
+            <div class="card-header">
+                <FluentIcon Value="@(new Icons.Regular.Size24.Code())" Slot="start" />
+                <h3>开发工具</h3>
+            </div>
+            <div class="card-content">
+                <p>推荐的IDE、编辑器和开发辅助工具。</p>
+            </div>
+            <div class="card-footer">
+                <FluentButton Appearance="Appearance.Accent">查看详情</FluentButton>
+            </div>
+        </FluentCard>
+
+        <FluentCard Width="300px" Height="200px">
+            <div class="card-header">
+                <FluentIcon Value="@(new Icons.Regular.Size24.WindowApps())" Slot="start" />
+                <h3>生产力工具</h3>
+            </div>
+            <div class="card-content">
+                <p>提高工作效率的各类应用和工具。</p>
+            </div>
+            <div class="card-footer">
+                <FluentButton Appearance="Appearance.Accent">查看详情</FluentButton>
+            </div>
+        </FluentCard>
+
+        <FluentCard Width="300px" Height="200px">
+            <div class="card-header">
+                <FluentIcon Value="@(new Icons.Regular.Size24.DesignIdeas())" Slot="start" />
+                <h3>设计软件</h3>
+            </div>
+            <div class="card-content">
+                <p>推荐的设计和原型制作工具。</p>
+            </div>
+            <div class="card-footer">
+                <FluentButton Appearance="Appearance.Accent">查看详情</FluentButton>
+            </div>
+        </FluentCard>
+    </FluentStack>
+</FluentStack>
+
+<style>
+    .card-header {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-content {
+        padding: 0 16px 16px;
+    }
+
+    .card-footer {
+        padding: 16px;
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>

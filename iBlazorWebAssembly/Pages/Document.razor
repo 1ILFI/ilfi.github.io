@@ -1,0 +1,175 @@
+@page "/document"
+@using System.Diagnostics.CodeAnalysis
+
+<PageTitle>文档</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+    <FluentCard>
+        <h1>文档中心</h1>
+        <p>这里是文档页面，您可以在这里找到各种技术文档和学习资料。</p>
+    </FluentCard>
+
+    <!-- 筛选器部分 -->
+    <FluentCard AreaRestricted="false" >
+        <div class="filter-container">
+            <!-- 使用FluentStack实现水平布局 -->
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="16" VerticalAlignment="VerticalAlignment.Bottom" Style="flex-wrap: wrap;">
+                <!-- 分类筛选器 -->
+                <div style="min-width: 180px;">
+                    <FluentLabel For="categoryFilter">分类:</FluentLabel>
+                    <FluentSelect Id="categoryFilter" @bind-Value="selectedCategory" 
+                                Placeholder="选择分类" TOption="string" Items="@categories"
+                                Style="width: 100%;">
+                        <FluentOption Value="@string.Empty">全部</FluentOption>
+                    </FluentSelect>
+                </div>
+                
+                <!-- 搜索框 -->
+                <div style="min-width: 240px;">
+                    <FluentLabel For="searchFilter">搜索:</FluentLabel>
+                    <FluentSearch Id="searchFilter" @bind-Value="searchText" Placeholder="搜索文档..." Style="width: 100%;" />
+                </div>
+                
+                <!-- 标签筛选器 -->
+                <div style="min-width: 300px; flex: 1;">
+                    <FluentLabel>标签:</FluentLabel>
+                    <div class="tag-container">
+                        @foreach (var tag in tags)
+                        {
+                            <FluentBadge Appearance="@(selectedTags.Contains(tag) ? Appearance.Accent : Appearance.Neutral)" 
+                                        @onclick="() => ToggleTag(tag)" 
+                                        Style="cursor: pointer; margin: 2px;">
+                                @tag
+                            </FluentBadge>
+                        }
+                    </div>
+                </div>
+            </FluentStack>
+        </div>
+    </FluentCard>
+
+    <!-- 文档列表部分 -->
+    <FluentGrid Columns="3" Style="grid-gap: 12px;">
+        @foreach (var document in FilteredDocuments())
+        {
+            <FluentGridItem>
+                <FluentCard>
+                    <div class="card-header">
+                        <FluentIcon Value="@GetIconForCategory(document.Category)" Slot="start" />
+                        <h3>@document.Title</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>@document.Description</p>
+                        <FluentDivider></FluentDivider>
+                        <div class="tag-list">
+                            @foreach (var tag in document.Tags)
+                            {
+                                <FluentBadge Appearance="Appearance.Neutral">@tag</FluentBadge>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <FluentButton Appearance="Appearance.Accent">查看文档</FluentButton>
+                    </div>
+                </FluentCard>
+            </FluentGridItem>
+        }
+    </FluentGrid>
+</FluentStack>
+
+@code {
+    // 筛选相关变量
+    private string selectedCategory = string.Empty;
+    private string searchText = string.Empty;
+    private List<string> selectedTags = new List<string>();
+
+    // 分类列表 - 简化为全部、Android、Windows和Game
+    private List<string> categories = new List<string> 
+    { 
+        string.Empty, // 全部
+        "Android", 
+        "Windows", 
+        "Game"
+    };
+
+    // 标签列表
+    private List<string> tags = new List<string>
+    {
+        "C#",
+        "Java",
+        "Unity",
+        "移动开发",
+        "桌面应用",
+        "游戏引擎"
+    };
+
+    // 文档数据模型
+    private class DocumentItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public List<string> Tags { get; set; } = new List<string>();
+    }
+
+    // 文档数据 - 简化为3个示例
+    private List<DocumentItem> documents = new List<DocumentItem>
+    {
+        new DocumentItem 
+        { 
+            Title = "Android Studio 开发指南", 
+            Description = "全面了解Android Studio的使用方法和Android应用开发流程。",
+            Category = "Android",
+            Tags = new List<string> { "Java", "移动开发" }
+        },
+        new DocumentItem 
+        { 
+            Title = "Windows应用开发", 
+            Description = "使用WPF和UWP开发现代Windows桌面应用程序。",
+            Category = "Windows",
+            Tags = new List<string> { "C#", "桌面应用" }
+        },
+        new DocumentItem 
+        { 
+            Title = "Unity游戏开发入门", 
+            Description = "Unity游戏引擎的基础知识和开发流程介绍。",
+            Category = "Game",
+            Tags = new List<string> { "C#", "Unity", "游戏引擎" }
+        }
+    };
+
+    // 根据文档类别返回相应图标 - 修改返回类型为具体的图标类型
+    private Microsoft.FluentUI.AspNetCore.Components.Icon GetIconForCategory(string category)
+    {
+        return category switch
+        {
+            "Android" => new Icons.Regular.Size24.Phone(),
+            "Windows" => new Icons.Regular.Size24.Window(),
+            "Game" => new Icons.Regular.Size24.Games(),
+            _ => new Icons.Regular.Size24.DocumentText() // 默认图标
+        };
+    }
+
+    // 切换标签选择状态
+    private void ToggleTag(string tag)
+    {
+        if (selectedTags.Contains(tag))
+        {
+            selectedTags.Remove(tag);
+        }
+        else
+        {
+            selectedTags.Add(tag);
+        }
+    }
+
+    // 根据筛选条件过滤文档
+    private List<DocumentItem> FilteredDocuments()
+    {
+        return documents.Where(doc => 
+            (string.IsNullOrEmpty(selectedCategory) || doc.Category == selectedCategory) &&
+            (string.IsNullOrEmpty(searchText) || doc.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase) || doc.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
+            (selectedTags.Count == 0 || doc.Tags.Any(t => selectedTags.Contains(t)))
+        ).ToList();
+    }
+}

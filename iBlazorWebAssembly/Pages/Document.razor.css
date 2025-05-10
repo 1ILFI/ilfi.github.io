@@ -1,0 +1,62 @@
+.card-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-content {
+    padding: 0 16px 16px;
+}
+
+.card-footer {
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 标准筛选器容器 */
+.filter-container {
+    padding: 16px;
+}
+
+/* 标签容器样式 */
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-top: 4px;
+    align-items: center;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+/* 确保下拉菜单正确显示 */
+::deep .fluent-select-listbox {
+    z-index: 9999 !important; /* 确保最高层级 */
+    max-height: 300px; /* 限制下拉菜单高度 */
+    overflow-y: auto; /* 允许垂直滚动 */
+}
+
+/* 确保卡片容器不会裁剪溢出内容 */
+::deep fluent-card {
+    overflow: visible !important;
+}
+
+/* 移除可能引起裁剪的样式 */
+::deep .fluent-card-header,
+::deep .fluent-card-body {
+    overflow: visible !important;
+}
+
+/* 响应式布局调整 */
+@@media (max-width: 768px) {
+    .filter-item {
+        width: 100%;
+    }
+}

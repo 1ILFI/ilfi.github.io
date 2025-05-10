@@ -1,0 +1,119 @@
+.nav-item[b-1qwwoph1yo] {
+    margin-bottom: 5px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item:last-child[b-1qwwoph1yo] {
+    margin-bottom: 0;
+}
+
+.nav-item:hover[b-1qwwoph1yo] {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+}
+
+[b-1qwwoph1yo] .nav-group-items {
+    padding-left: 0;
+    position: relative;
+    background-color: transparent;
+}
+
+[b-1qwwoph1yo] summary {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+[b-1qwwoph1yo] summary::-webkit-details-marker {
+    display: none;
+}
+
+[b-1qwwoph1yo] .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s ease;
+    position: relative;
+    background-color: transparent;
+}
+
+[b-1qwwoph1yo] .nav-link:hover {
+    background-color: transparent;
+}
+
+[b-1qwwoph1yo] .nav-link.active {
+    background-color: transparent;
+    color: #0077cc;
+}
+
+/* 菜单图标样式 */
+.menu-icon[b-1qwwoph1yo] {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: transparent;
+}
+
+[b-1qwwoph1yo] .fluent-icon {
+    background-color: transparent !important;
+    fill: currentColor;
+}
+
+[b-1qwwoph1yo] svg {
+    background-color: transparent !important;
+    fill: inherit;
+}
+
+[b-1qwwoph1yo] .fluent-icon > * {
+    background-color: transparent !important;
+}
+
+[b-1qwwoph1yo] .nav-link .fluent-icon-filled,
+[b-1qwwoph1yo] .nav-link .fluent-icon-regular {
+    background-color: transparent !important;
+}
+
+[b-1qwwoph1yo] .fluent-icon svg path,
+[b-1qwwoph1yo] .fluent-icon svg rect,
+[b-1qwwoph1yo] .fluent-icon svg circle {
+    fill: currentColor;
+    background-color: transparent !important;
+}
+
+[b-1qwwoph1yo] .menu-icon * {
+    background-color: transparent !important;
+}
+
+/* 增强图标透明效果 */
+[b-1qwwoph1yo] .nav-item svg *,
+[b-1qwwoph1yo] .header-icon svg * {
+    background-color: transparent !important;
+}
+
+[b-1qwwoph1yo] .nav-link:hover .fluent-icon,
+[b-1qwwoph1yo] .nav-link.active .fluent-icon,
+[b-1qwwoph1yo] summary:hover .fluent-icon {
+    background-color: transparent !important;
+}
+
+[b-1qwwoph1yo] .fluent-icon-wrapper,
+[b-1qwwoph1yo] .fluent-icon-wrapper * {
+    background-color: transparent !important;
+}

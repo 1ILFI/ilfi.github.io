@@ -1,0 +1,70 @@
+@page "/misc"
+
+<PageTitle>杂项</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+    <FluentCard>
+        <h1>杂项收藏</h1>
+        <p>这里收集了各种有趣的资源和链接。</p>
+    </FluentCard>
+
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12" Wrap="true">
+        <FluentCard Width="300px" Height="200px">
+            <div class="card-header">
+                <FluentIcon Value="@(new Icons.Regular.Size24.DrinkCoffee())" Slot="start" />
+                <h3>咖啡文化</h3>
+            </div>
+            <div class="card-content">
+                <p>关于咖啡豆种植、烘焙和冲泡的知识。</p>
+            </div>
+            <div class="card-footer">
+                <FluentButton Appearance="Appearance.Accent">了解更多</FluentButton>
+            </div>
+        </FluentCard>
+
+        <FluentCard Width="300px" Height="200px">
+            <div class="card-header">
+                <FluentIcon Value="@(new Icons.Regular.Size24.BookLetter())" Slot="start" />
+                <h3>读书笔记</h3>
+            </div>
+            <div class="card-content">
+                <p>各类书籍的阅读笔记和感想。</p>
+            </div>
+            <div class="card-footer">
+                <FluentButton Appearance="Appearance.Accent">查看笔记</FluentButton>
+            </div>
+        </FluentCard>
+
+        <FluentCard Width="300px" Height="200px">
+            <div class="card-header">
+                <FluentIcon Value="@(new Icons.Regular.Size24.Link())" Slot="start" />
+                <h3>有用链接</h3>
+            </div>
+            <div class="card-content">
+                <p>收集的一些有价值的网站和资源链接。</p>
+            </div>
+            <div class="card-footer">
+                <FluentButton Appearance="Appearance.Accent">浏览链接</FluentButton>
+            </div>
+        </FluentCard>
+    </FluentStack>
+</FluentStack>
+
+<style>
+    .card-header {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-content {
+        padding: 0 16px 16px;
+    }
+
+    .card-footer {
+        padding: 16px;
+        display: flex;
+        justify-content: flex-end;
+    }
+</style>

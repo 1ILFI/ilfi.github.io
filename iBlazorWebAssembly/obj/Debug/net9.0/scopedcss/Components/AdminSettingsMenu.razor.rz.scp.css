@@ -1,0 +1,72 @@
+.admin-settings-menu[b-uvks48yupg] {
+    position: relative;
+}
+
+.settings-button[b-uvks48yupg] {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: rgb(18, 24, 42);
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.settings-button:hover[b-uvks48yupg] {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.settings-popup[b-uvks48yupg] {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 200px;
+    z-index: 1000;
+    overflow: hidden;
+    animation: fadeIn-b-uvks48yupg 0.2s ease;
+}
+
+.settings-header[b-uvks48yupg] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #f5f5f5;
+}
+
+.settings-items[b-uvks48yupg] {
+    padding: 8px 0;
+}
+
+.settings-item[b-uvks48yupg] {
+    width: 100%;
+    text-align: left;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.settings-item:hover[b-uvks48yupg] {
+    background-color: #f5f5f5;
+}
+
+@keyframes fadeIn-b-uvks48yupg {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .settings-popup[b-uvks48yupg] {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 300px;
+    }
+}

@@ -1,0 +1,274 @@
+.floating-nav[b-g645tb5q64] {
+    position: fixed; /* 改为fixed以避免滚动影响 */
+    top: 100px;
+    left: 20px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.05s ease; /* 减少过渡动画时间提高响应性 */
+    overflow: hidden;
+    width: auto;
+    backdrop-filter: blur(5px);
+    will-change: transform; /* 增加性能优化 */
+    transform: translate3d(0, 0, 0); /* 启用GPU加速 */
+    touch-action: none; /* 防止触摸设备上的滚动干扰 */
+}
+
+.floating-nav:hover[b-g645tb5q64] {
+    box-shadow: 0 6px 16px rgb(255, 255, 255);
+}
+
+.nav-header[b-g645tb5q64] {
+    padding: 12px;
+    background-color: transparent;
+    cursor: grab; /* 更改鼠标样式为抓取状态 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* 添加拖动时的状态 */
+.nav-header.dragging[b-g645tb5q64] {
+    cursor: grabbing; /* 抓取状态 */
+    background-color: rgba(0, 119, 204, 0.05); /* 轻微背景变化提供视觉反馈 */
+}
+
+.nav-header-title[b-g645tb5q64] {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 添加居中对齐 */
+    position: relative;
+}
+
+.header-icon[b-g645tb5q64] {
+    font-size: 36px;
+    color: #156caf;
+    background-color: transparent !important; /* 确保背景透明 */
+}
+
+.nav-content[b-g645tb5q64] {
+    padding: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.nav-item[b-g645tb5q64] {
+    margin-bottom: 5px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item:last-child[b-g645tb5q64] {
+    margin-bottom: 0;
+}
+
+.nav-item:hover[b-g645tb5q64] {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+}
+
+.custom-menu-item[b-g645tb5q64] {
+    /* NavMenuItem组件样式协调 */
+    overflow: visible !important;
+}
+
+[b-g645tb5q64] .nav-group-items {
+    padding-left: 0;
+    position: relative;
+    background-color: transparent;
+}
+
+[b-g645tb5q64] summary {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+[b-g645tb5q64] summary::-webkit-details-marker {
+    display: none;
+}
+
+[b-g645tb5q64] .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s ease;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+[b-g645tb5q64] .nav-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+[b-g645tb5q64] .nav-link.active {
+    background-color: rgba(0, 119, 204, 0.1);
+    color: #0077cc;
+}
+
+.collapse-btn[b-g645tb5q64] {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 36px;
+    background-color: transparent !important; /* 确保背景透明 */
+}
+
+.collapse-btn:hover[b-g645tb5q64] {
+    background-color: transparent;
+}
+
+/* 展开状态的样式 */
+.expanded .nav-content[b-g645tb5q64] {
+    max-height: 80vh; /* 最大高度，避免过长 */
+    opacity: 1;
+    padding: 8px;
+    background-color: transparent;
+}
+
+.expanded[b-g645tb5q64] {
+    width: auto;
+}
+
+.expanded .nav-header[b-g645tb5q64] {
+    border-bottom: 1px solid rgba(224, 224, 224, 0.1);
+    border-radius: 12px 12px 0 0;
+    background-color: transparent;
+}
+
+/* 折叠状态的样式 */
+.minimized[b-g645tb5q64] {
+    width: auto;
+    border-radius: 12px;
+}
+
+.minimized .nav-header[b-g645tb5q64] {
+    border-bottom: none;
+}
+
+.minimized .nav-content[b-g645tb5q64] {
+    max-height: 0;
+    padding: 0 8px;
+}
+
+/* 菜单图标样式 */
+.menu-icon[b-g645tb5q64] {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: transparent;
+}
+
+.menu-icon[b-g645tb5q64]  svg {
+    width: 32px;
+    height: 32px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover .menu-icon[b-g645tb5q64]  svg {
+    color: #0077cc;
+    transform: scale(1.1);
+}
+
+.nav-link.active .menu-icon[b-g645tb5q64]  svg {
+    color: #0077cc;
+}
+
+[b-g645tb5q64] .fluent-icon {
+    background-color: transparent !important;
+    fill: currentColor;
+}
+
+[b-g645tb5q64] svg {
+    background-color: transparent !important;
+    fill: inherit;
+}
+
+[b-g645tb5q64] .fluent-icon > * {
+    background-color: transparent !important;
+}
+
+[b-g645tb5q64] .nav-link .fluent-icon-filled,
+[b-g645tb5q64] .nav-link .fluent-icon-regular {
+    background-color: transparent !important;
+}
+
+[b-g645tb5q64] .fluent-icon svg path,
+[b-g645tb5q64] .fluent-icon svg rect,
+[b-g645tb5q64] .fluent-icon svg circle {
+    fill: currentColor;
+    background-color: transparent !important;
+}
+
+[b-g645tb5q64] .menu-icon * {
+    background-color: transparent !important;
+}
+
+/* 增强图标透明效果 */
+[b-g645tb5q64] .nav-item svg *,
+[b-g645tb5q64] .header-icon svg *,
+[b-g645tb5q64] .collapse-btn svg * {
+    background-color: transparent !important;
+}
+
+[b-g645tb5q64] .nav-link:hover .fluent-icon,
+[b-g645tb5q64] .nav-link.active .fluent-icon,
+[b-g645tb5q64] summary:hover .fluent-icon {
+    background-color: transparent !important;
+}
+
+[b-g645tb5q64] .fluent-icon-wrapper,
+[b-g645tb5q64] .fluent-icon-wrapper * {
+    background-color: transparent !important;
+}
+
+@media (max-width: 768px) {
+    .floating-nav[b-g645tb5q64] {
+        width: auto;
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+    }
+    
+    .menu-icon[b-g645tb5q64] {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .menu-icon[b-g645tb5q64]  svg {
+        width: 24px;
+        height: 24px;
+    }
+}

@@ -1,0 +1,28 @@
+.metadata-manager[b-8q2ho9dk9g] {
+    padding: 20px;
+}
+
+.metadata-manager h1[b-8q2ho9dk9g] {
+    margin-bottom: 20px;
+}
+
+.toolbar[b-8q2ho9dk9g] {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.filter-section[b-8q2ho9dk9g] {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@@media (max-width: 768px) {
+    .filter-section[b-8q2ho9dk9g] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

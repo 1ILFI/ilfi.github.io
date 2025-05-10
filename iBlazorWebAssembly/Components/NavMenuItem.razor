@@ -1,0 +1,53 @@
+@if (Item.IsGroup)
+{
+    <details open>
+        <summary>
+            <span class="nav-link">
+                <span class="menu-icon">
+                    <FluentIcon Value="@GetIconForMenuItem(Item)" Size="Size.Size48" />
+                </span>
+            </span>
+        </summary>
+        <div class="nav-group-items">
+            @foreach (var childItem in Item.Children)
+            {
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="@childItem.Href" Match="NavLinkMatch.All" disabled="@childItem.Disabled">
+                        <span class="menu-icon">
+                            <FluentIcon Value="@GetIconForMenuItem(childItem)" Size="Size.Size48" />
+                        </span>
+                    </NavLink>
+                </div>
+            }
+        </div>
+    </details>
+}
+else
+{
+    <NavLink class="nav-link" href="@Item.Href" Match="NavLinkMatch.All" disabled="@Item.Disabled">
+        <span class="menu-icon">
+            <FluentIcon Value="@GetIconForMenuItem(Item)" Size="Size.Size48" />
+        </span>
+    </NavLink>
+}
+
+@code {
+    [Parameter]
+    public NavMenu.MenuItem Item { get; set; } = new();
+
+    private Icon GetIconForMenuItem(NavMenu.MenuItem item)
+    {
+        return item.IconType switch
+        {
+            "Home" => new Icons.Regular.Size24.Home(),
+            "AddCircle" => new Icons.Regular.Size24.Add(),
+            "Toolbox" => new Icons.Regular.Size24.Toolbox(),
+            "DesignIdeas" => new Icons.Regular.Size24.DesignIdeas(),
+            "WeatherPartlyCloudyDay" => new Icons.Regular.Size24.WeatherPartlyCloudyDay(),
+            "Link" => new Icons.Regular.Size24.Link(),
+            "Settings" => new Icons.Regular.Size24.Settings(),
+            "DataManagement" => new Icons.Regular.Size24.BookDatabase(),
+            _ => new Icons.Regular.Size24.Home()
+        };
+    }
+}

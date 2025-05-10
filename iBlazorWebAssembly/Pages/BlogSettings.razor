@@ -1,0 +1,158 @@
+@page "/blog-settings"
+@using iBlazorWebAssembly.Models
+@using iBlazorWebAssembly.Services
+@using Microsoft.AspNetCore.Components.Web
+
+@inject IMetadataService<BlogSettingsMetadata> SettingsService
+@inject NavigationManager NavigationManager
+
+<PageTitle>博客设置</PageTitle>
+
+<FluentCard AreaRestricted="false">
+    <div class="blog-settings">
+        <h1>博客设置</h1>
+        
+        @if (isLoading)
+        {
+            <div class="loading-container">
+                <FluentProgressRing />
+                <span>加载中...</span>
+            </div>
+        }
+        else
+        {
+            <div class="settings-form">
+                <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+                    <FluentTextField @bind-Value="settings.BlogName" Label="博客名称" Required="true" />
+                    <FluentTextArea @bind-Value="settings.Description" Label="博客描述" Style="min-height: 100px;" />
+                    <FluentTextField @bind-Value="settings.AuthorName" Label="作者名称" />
+                    <FluentNumberField @bind-Value="settings.PostsPerPage" Label="每页显示文章数" Min="1" Max="50" />
+                    <FluentCheckbox @bind-Value="settings.ShowSummary" Label="显示文章摘要" />
+                    
+                    <FluentSelect TOption="string" @bind-Value="settings.Theme" Label="博客主题">
+                        <FluentOption TOption="string" Value="Default">默认主题</FluentOption>
+                        <FluentOption TOption="string" Value="Dark">深色主题</FluentOption>
+                        <FluentOption TOption="string" Value="Light">浅色主题</FluentOption>
+                    </FluentSelect>
+                    
+                    <h3 class="mt-4">社交媒体链接</h3>
+                    <div class="social-links">
+                        @foreach (var link in socialLinksEditable)
+                        {
+                            <div class="social-link-item">
+                                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8" VerticalAlignment="VerticalAlignment.Center">
+                                    <FluentTextField @bind-Value="link.Name" Placeholder="平台名称" Style="width: 120px;" />
+                                    <FluentTextField @bind-Value="link.Url" Placeholder="链接地址" Style="flex-grow: 1;" />
+                                    <FluentButton OnClick="@(() => RemoveSocialLink(link))" Title="移除">
+                                        <FluentIcon Value="@(new Icons.Regular.Size20.Delete())" Slot="start" />
+                                    </FluentButton>
+                                </FluentStack>
+                            </div>
+                        }
+                        <FluentButton OnClick="AddSocialLink">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.Add())" Slot="start" />
+                            添加社交媒体
+                        </FluentButton>
+                    </div>
+                    
+                    <div class="actions">
+                        <FluentButton Appearance="Appearance.Accent" OnClick="SaveSettings">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.Save())" Slot="start" />
+                            保存设置
+                        </FluentButton>
+                        <FluentButton OnClick="ResetSettings">重置</FluentButton>
+                    </div>
+                </FluentStack>
+            </div>
+        }
+    </div>
+</FluentCard>
+
+@code {
+    private BlogSettingsMetadata settings = new();
+    private List<SocialLinkItem> socialLinksEditable = new();
+    private bool isLoading = true;
+    
+    // 创建一个可编辑的社交媒体链接类
+    private class SocialLinkItem
+    {
+        public string Name { get; set; }
+        public string Url { get; set; }
+        
+        public SocialLinkItem(string name, string url)
+        {
+            Name = name;
+            Url = url;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSettings();
+    }
+
+    private async Task LoadSettings()
+    {
+        isLoading = true;
+        
+        try
+        {
+            var allSettings = await SettingsService.GetAllAsync();
+            var storedSettings = allSettings.FirstOrDefault();
+            
+            if (storedSettings != null)
+            {
+                settings = storedSettings;
+            }
+            else
+            {
+                // 创建默认设置
+                settings = new BlogSettingsMetadata();
+                await SettingsService.AddAsync(settings);
+            }
+            
+            // 转换社交媒体链接到可编辑列表
+            socialLinksEditable = settings.SocialLinks
+                .Select(kv => new SocialLinkItem(kv.Key, kv.Value))
+                .ToList();
+        }
+        catch (Exception)
+        {
+            settings = new BlogSettingsMetadata();
+            socialLinksEditable = new List<SocialLinkItem>();
+        }
+        
+        isLoading = false;
+    }
+
+    private void AddSocialLink()
+    {
+        socialLinksEditable.Add(new SocialLinkItem(string.Empty, string.Empty));
+    }
+
+    private void RemoveSocialLink(SocialLinkItem link)
+    {
+        socialLinksEditable.Remove(link);
+    }
+
+    private async Task SaveSettings()
+    {
+        // 更新社交媒体链接
+        settings.SocialLinks = socialLinksEditable
+            .Where(link => !string.IsNullOrWhiteSpace(link.Name) && !string.IsNullOrWhiteSpace(link.Url))
+            .ToDictionary(item => item.Name, item => item.Url);
+        
+        // 保存设置
+        bool success = await SettingsService.UpdateAsync(settings);
+        
+        if (success)
+        {
+            // 可以添加保存成功提示
+        }
+    }
+
+    private async Task ResetSettings()
+    {
+        await LoadSettings();
+    }
+}

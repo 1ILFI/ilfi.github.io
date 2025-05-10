@@ -1,0 +1,274 @@
+.floating-nav {
+    position: fixed; /* 改为fixed以避免滚动影响 */
+    top: 100px;
+    left: 20px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.05s ease; /* 减少过渡动画时间提高响应性 */
+    overflow: hidden;
+    width: auto;
+    backdrop-filter: blur(5px);
+    will-change: transform; /* 增加性能优化 */
+    transform: translate3d(0, 0, 0); /* 启用GPU加速 */
+    touch-action: none; /* 防止触摸设备上的滚动干扰 */
+}
+
+.floating-nav:hover {
+    box-shadow: 0 6px 16px rgb(255, 255, 255);
+}
+
+.nav-header {
+    padding: 12px;
+    background-color: transparent;
+    cursor: grab; /* 更改鼠标样式为抓取状态 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* 添加拖动时的状态 */
+.nav-header.dragging {
+    cursor: grabbing; /* 抓取状态 */
+    background-color: rgba(0, 119, 204, 0.05); /* 轻微背景变化提供视觉反馈 */
+}
+
+.nav-header-title {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 添加居中对齐 */
+    position: relative;
+}
+
+.header-icon {
+    font-size: 36px;
+    color: #156caf;
+    background-color: transparent !important; /* 确保背景透明 */
+}
+
+.nav-content {
+    padding: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.nav-item {
+    margin-bottom: 5px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item:last-child {
+    margin-bottom: 0;
+}
+
+.nav-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+}
+
+.custom-menu-item {
+    /* NavMenuItem组件样式协调 */
+    overflow: visible !important;
+}
+
+::deep .nav-group-items {
+    padding-left: 0;
+    position: relative;
+    background-color: transparent;
+}
+
+::deep summary {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+::deep summary::-webkit-details-marker {
+    display: none;
+}
+
+::deep .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s ease;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+::deep .nav-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+::deep .nav-link.active {
+    background-color: rgba(0, 119, 204, 0.1);
+    color: #0077cc;
+}
+
+.collapse-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 36px;
+    background-color: transparent !important; /* 确保背景透明 */
+}
+
+.collapse-btn:hover {
+    background-color: transparent;
+}
+
+/* 展开状态的样式 */
+.expanded .nav-content {
+    max-height: 80vh; /* 最大高度，避免过长 */
+    opacity: 1;
+    padding: 8px;
+    background-color: transparent;
+}
+
+.expanded {
+    width: auto;
+}
+
+.expanded .nav-header {
+    border-bottom: 1px solid rgba(224, 224, 224, 0.1);
+    border-radius: 12px 12px 0 0;
+    background-color: transparent;
+}
+
+/* 折叠状态的样式 */
+.minimized {
+    width: auto;
+    border-radius: 12px;
+}
+
+.minimized .nav-header {
+    border-bottom: none;
+}
+
+.minimized .nav-content {
+    max-height: 0;
+    padding: 0 8px;
+}
+
+/* 菜单图标样式 */
+.menu-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: transparent;
+}
+
+.menu-icon ::deep svg {
+    width: 32px;
+    height: 32px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover .menu-icon ::deep svg {
+    color: #0077cc;
+    transform: scale(1.1);
+}
+
+.nav-link.active .menu-icon ::deep svg {
+    color: #0077cc;
+}
+
+::deep .fluent-icon {
+    background-color: transparent !important;
+    fill: currentColor;
+}
+
+::deep svg {
+    background-color: transparent !important;
+    fill: inherit;
+}
+
+::deep .fluent-icon > * {
+    background-color: transparent !important;
+}
+
+::deep .nav-link .fluent-icon-filled,
+::deep .nav-link .fluent-icon-regular {
+    background-color: transparent !important;
+}
+
+::deep .fluent-icon svg path,
+::deep .fluent-icon svg rect,
+::deep .fluent-icon svg circle {
+    fill: currentColor;
+    background-color: transparent !important;
+}
+
+::deep .menu-icon * {
+    background-color: transparent !important;
+}
+
+/* 增强图标透明效果 */
+::deep .nav-item svg *,
+::deep .header-icon svg *,
+::deep .collapse-btn svg * {
+    background-color: transparent !important;
+}
+
+::deep .nav-link:hover .fluent-icon,
+::deep .nav-link.active .fluent-icon,
+::deep summary:hover .fluent-icon {
+    background-color: transparent !important;
+}
+
+::deep .fluent-icon-wrapper,
+::deep .fluent-icon-wrapper * {
+    background-color: transparent !important;
+}
+
+@media (max-width: 768px) {
+    .floating-nav {
+        width: auto;
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+    }
+    
+    .menu-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .menu-icon ::deep svg {
+        width: 24px;
+        height: 24px;
+    }
+}

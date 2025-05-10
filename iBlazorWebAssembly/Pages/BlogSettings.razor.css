@@ -1,0 +1,51 @@
+.blog-settings {
+    padding: 20px;
+}
+
+.blog-settings h1 {
+    margin-bottom: 20px;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+}
+
+.settings-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.social-link-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.mt-4 {
+    margin-top: 16px;
+}
+
+@@media (max-width: 768px) {
+    .actions {
+        flex-direction: column;
+    }
+}

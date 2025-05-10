@@ -1,0 +1,188 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="floating-nav @(isMinimized ? "minimized" : "expanded")" id="floatingNavMenu" style="@GetPositionStyle()">
+    <div class="nav-header @(isDragging ? "dragging" : "")" @onmousedown="StartDrag" @onmouseup="StopDrag" @ondblclick="ToggleMinimize">
+        <FluentButton Class="collapse-btn" @onclick="ToggleMinimize" IconStart="@(new Icons.Regular.Size24.Navigation())">
+        </FluentButton>
+    </div>
+    <div class="nav-content">
+        <nav class="flex-column">
+            @foreach (var item in MenuItems)
+            {
+                <div class="nav-item">
+                    <NavMenuItem Item="item" />
+                </div>
+            }
+        </nav>
+    </div>
+</div>
+
+@code {
+    private List<MenuItem> MenuItems = new();
+    private string topPosition = "100px";
+    private string leftPosition = "20px";
+    private bool isMinimized = false;
+    private bool isDragging = false;
+    private IJSObjectReference? navMenuModule;
+
+    public class MenuItem
+    {
+        public int Id { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public string IconType { get; set; } = "Home";
+        public string Href { get; set; } = string.Empty;
+        public bool IsGroup { get; set; }
+        public bool Disabled { get; set; }
+        public List<MenuItem> Children { get; set; } = new List<MenuItem>();
+    }
+
+    // 获取定位样式字符串
+    private string GetPositionStyle() => $"top: {topPosition}; left: {leftPosition};";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeMenuItems();
+        await LoadNavMenuPosition();
+    }
+
+    private async Task InitializeMenuItems()
+    {
+        // 初始化菜单项
+        MenuItems.Add(new MenuItem
+        {
+            Id = 1,
+            Text = "主页",
+            IconType = "Home",
+            Href = "",
+        });
+        
+        MenuItems.Add(new MenuItem
+        {
+            Id = 2,
+            Text = "文档",
+            IconType = "DesignIdeas",
+            Href = "document",
+        });
+        
+        MenuItems.Add(new MenuItem
+        {
+            Id = 3,
+            Text = "软件",
+            IconType = "Toolbox",
+            Href = "software",
+        });
+        
+        MenuItems.Add(new MenuItem
+        {
+            Id = 4,
+            Text = "杂项",
+            IconType = "Link",
+            Href = "misc",
+        });
+        
+        // 添加元数据管理菜单项
+        MenuItems.Add(new MenuItem
+        {
+            Id = 5,
+            Text = "元数据管理",
+            IconType = "DataManagement",
+            Href = "metadata-manager",
+        });
+        
+        // 添加博客设置菜单项
+        MenuItems.Add(new MenuItem
+        {
+            Id = 6,
+            Text = "博客设置",
+            IconType = "Settings",
+            Href = "blog-settings",
+        });
+    }
+
+    private async Task LoadNavMenuPosition()
+    {
+        // 尝试从localStorage中恢复位置
+        var savedPosition = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "navMenuPosition");
+        if (!string.IsNullOrEmpty(savedPosition))
+        {
+            try
+            {
+                var positions = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(savedPosition);
+                if (positions != null && positions.ContainsKey("top") && positions.ContainsKey("left"))
+                {
+                    topPosition = positions["top"];
+                    leftPosition = positions["left"];
+                }
+                
+                // 恢复折叠状态
+                var minimizedState = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "navMenuMinimized");
+                if (!string.IsNullOrEmpty(minimizedState) && bool.TryParse(minimizedState, out bool state))
+                {
+                    isMinimized = state;
+                }
+            }
+            catch
+            {
+                // 如果解析失败，使用默认位置
+            }
+        }
+    }
+
+    private async Task StartDrag()
+    {
+        isDragging = true;
+        await JSRuntime.InvokeVoidAsync("startDragging", "floatingNavMenu");
+    }
+
+    private async Task StopDrag()
+    {
+        if (isDragging)
+        {
+            isDragging = false;
+            await JSRuntime.InvokeVoidAsync("stopDragging");
+            
+            // 获取新位置
+            var position = await JSRuntime.InvokeAsync<Dictionary<string, string>>("getNavPosition", "floatingNavMenu");
+            if (position != null)
+            {
+                topPosition = position["top"];
+                leftPosition = position["left"];
+                
+                // 保存位置到localStorage
+                var positionJson = System.Text.Json.JsonSerializer.Serialize(position);
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "navMenuPosition", positionJson);
+                
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task ToggleMinimize()
+    {
+        isMinimized = !isMinimized;
+        
+        // 保存折叠状态到localStorage
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "navMenuMinimized", isMinimized.ToString().ToLower());
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // 加载JavaScript模块
+            navMenuModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/NavMenuService.js");
+            
+            // 初始化导航菜单
+            await JSRuntime.InvokeVoidAsync("initNavMenu");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (navMenuModule != null)
+        {
+            await navMenuModule.DisposeAsync();
+        }
+    }
+}

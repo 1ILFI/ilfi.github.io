@@ -1,0 +1,32 @@
+@inherits LayoutComponentBase
+
+<div class="admin-layout">
+    <header class="admin-header">
+        <h1>博客管理后台</h1>
+        <nav class="admin-nav">
+            <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => NavigationManager.NavigateTo("/admin"))">
+                <FluentIcon Value="@(new Icons.Regular.Size20.Home())" Slot="start" />
+                首页
+            </FluentButton>
+            <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => NavigationManager.NavigateTo("/"))">
+                <FluentIcon Value="@(new Icons.Regular.Size20.Globe())" Slot="start" />
+                访问博客
+            </FluentButton>
+        </nav>
+    </header>
+    
+    <main class="admin-content">
+        <FluentMessageBarProvider 
+            Section="MESSAGES_ADMIN" 
+            ClearAfterNavigation="true"
+            MaxMessageCount="3"
+            NewestOnTop="true"
+            Type="MessageType.MessageBar" />
+        @Body
+    </main>
+</div>
+
+@code {
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+}

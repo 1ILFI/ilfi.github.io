@@ -1,0 +1,46 @@
+@inject NavigationManager NavigationManager
+
+<div class="admin-settings-menu">
+    <FluentButton Appearance="Appearance.Accent" 
+                 Icon="@(new Icons.Regular.Size24.Settings())" 
+                 Title="系统设置"
+                 Class="settings-button"
+                 @onclick="() => isMenuOpen = !isMenuOpen">
+    </FluentButton>
+    
+    @if (isMenuOpen)
+    {
+        <div class="settings-popup">
+            <div class="settings-items">
+                <FluentButton Appearance="Appearance.Lightweight"
+                             Class="settings-item"
+                             OnClick="NavigateToMetadataManager"
+                             IconStart="@(new Icons.Regular.Size20.BookDatabase())">
+                    元数据管理
+                </FluentButton>
+                <FluentButton Appearance="Appearance.Lightweight"
+                             Class="settings-item"
+                             OnClick="NavigateToBlogSettings"
+                             IconStart="@(new Icons.Regular.Size20.Settings())">
+                    博客设置
+                </FluentButton>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isMenuOpen = false;
+
+    private void NavigateToMetadataManager()
+    {
+        NavigationManager.NavigateTo("metadata-manager");
+        isMenuOpen = false;
+    }
+
+    private void NavigateToBlogSettings()
+    {
+        NavigationManager.NavigateTo("blog-settings");
+        isMenuOpen = false;
+    }
+}
