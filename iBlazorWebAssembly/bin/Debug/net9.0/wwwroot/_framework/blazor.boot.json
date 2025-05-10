@@ -1,9 +1,12 @@
 {
   "mainAssemblyName": "iBlazorWebAssembly",
   "resources": {
-    "hash": "sha256-0CPbNBPLAvlJYQheANYjwLIvUc9GdSnZMGTo4rFbP28=",
+    "hash": "sha256-ncgm52uFmELNbG4lnvdpNXVl4+xatvYcRXmH5x0Xzrw=",
     "fingerprinting": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "Blazored.LocalStorage.wasm",
+      "DocumentFormat.OpenXml.mww8o1gizm.wasm": "DocumentFormat.OpenXml.wasm",
+      "DocumentFormat.OpenXml.Framework.vqjfsr32ha.wasm": "DocumentFormat.OpenXml.Framework.wasm",
+      "Markdig.8m8q17eux9.wasm": "Markdig.wasm",
       "Microsoft.ApplicationInsights.i7qpjcp04n.wasm": "Microsoft.ApplicationInsights.wasm",
       "Microsoft.AspNetCore.Authorization.gf26ou9jj9.wasm": "Microsoft.AspNetCore.Authorization.wasm",
       "Microsoft.AspNetCore.Components.v3fd2n5hlr.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -57,6 +60,8 @@
       "Microsoft.TestPlatform.PlatformAbstractions.58lq4e1fcz.wasm": "Microsoft.TestPlatform.PlatformAbstractions.wasm",
       "Microsoft.VisualStudio.TestPlatform.ObjectModel.y0f7dr830f.wasm": "Microsoft.VisualStudio.TestPlatform.ObjectModel.wasm",
       "Microsoft.VisualStudio.TestPlatform.TestFramework.i4gq0kks4b.wasm": "Microsoft.VisualStudio.TestPlatform.TestFramework.wasm",
+      "Octokit.7uhv1cfoku.wasm": "Octokit.wasm",
+      "System.IO.Packaging.kyoypuukwu.wasm": "System.IO.Packaging.wasm",
       "Microsoft.Testing.Extensions.Telemetry.resources.1602b72otj.wasm": "Microsoft.Testing.Extensions.Telemetry.resources.wasm",
       "Microsoft.Testing.Extensions.Telemetry.resources.3jhajtjs6b.wasm": "Microsoft.Testing.Extensions.Telemetry.resources.wasm",
       "Microsoft.Testing.Extensions.Telemetry.resources.puh9vl14w4.wasm": "Microsoft.Testing.Extensions.Telemetry.resources.wasm",
@@ -325,8 +330,8 @@
       "icudt_EFIGS.tptq2av103.dat": "icudt_EFIGS.dat",
       "icudt_no_CJK.lfu7j35m59.dat": "icudt_no_CJK.dat",
       "Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.otbthx34up.wasm": "Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.wasm",
-      "iBlazorWebAssembly.krz0fl8mm3.wasm": "iBlazorWebAssembly.wasm",
-      "iBlazorWebAssembly.c3so9n5mpz.pdb": "iBlazorWebAssembly.pdb"
+      "iBlazorWebAssembly.kkv69uun7z.wasm": "iBlazorWebAssembly.wasm",
+      "iBlazorWebAssembly.yisg432ajv.pdb": "iBlazorWebAssembly.pdb"
     },
     "jsModuleNative": {
       "dotnet.native.hvg7u8bimp.js": "sha256-LX9rFEWGVxhkOkAVPG0w5RxPwzPBlEUz6dQNjWS7M+M="
@@ -348,6 +353,9 @@
     },
     "assembly": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "sha256-OaMAAd5n7ORfyur5e3QIyEVKJ76MKIvwbg7/icnnYcU=",
+      "DocumentFormat.OpenXml.mww8o1gizm.wasm": "sha256-amv7icVrUtGmfPyNzAwJFqsP+YA5L4MjxpoReXq1pho=",
+      "DocumentFormat.OpenXml.Framework.vqjfsr32ha.wasm": "sha256-t6kaCMIC/KNOYiCLe6e43r3FcC9KZcw8k8F1blF7XxY=",
+      "Markdig.8m8q17eux9.wasm": "sha256-4NRl6Uv3KMSWq86K58aRc0myM/vF0kILqNdUqpOTXdw=",
       "Microsoft.ApplicationInsights.i7qpjcp04n.wasm": "sha256-7oMhZAKcl65Z2CfhtItCU9YC2Krd2qk4apikSwTEVbM=",
       "Microsoft.AspNetCore.Authorization.gf26ou9jj9.wasm": "sha256-zPFXeeGdBs4UPBpbat5NEN4EI/Ig1eV4jzbgb6Pcurc=",
       "Microsoft.AspNetCore.Components.v3fd2n5hlr.wasm": "sha256-uxsAoGDTMmkORHVq8kyh/BB0ebk1uKUb97qNJkwZeRA=",
@@ -401,6 +409,8 @@
       "Microsoft.TestPlatform.PlatformAbstractions.58lq4e1fcz.wasm": "sha256-9Tmr574AYCtVgDvJWcx5sSgK+J4BgsPImQNdzW8ZrvA=",
       "Microsoft.VisualStudio.TestPlatform.ObjectModel.y0f7dr830f.wasm": "sha256-0gAB6J71kWVMQ834FwsIQs7dPEDzBYae+JMt1tfJSZc=",
       "Microsoft.VisualStudio.TestPlatform.TestFramework.i4gq0kks4b.wasm": "sha256-3huMHp04KZW4LKAcskB0vmPxWDYBRXfOIoJtg15JZwQ=",
+      "Octokit.7uhv1cfoku.wasm": "sha256-D61DV9MKNO9EWyHyZTyl4vEdNpkapdUCC7LJzqC578A=",
+      "System.IO.Packaging.kyoypuukwu.wasm": "sha256-3INhGGuB6NgchBTE0OYgqy2f9J1KywkcZ2UUkFaeUjY=",
       "Microsoft.CSharp.rtelzgo5qn.wasm": "sha256-sb4OTrzpJjaX/xq3MPBJBmS9JkiQz9azllgFrhhU/bw=",
       "Microsoft.VisualBasic.Core.rov4p20cgi.wasm": "sha256-a3rs6Kmp+m12xUnYhoc07m3D9/0TM6zemU7jCmU0WwA=",
       "Microsoft.VisualBasic.yffsxgg1pj.wasm": "sha256-0oH/gAOr4hHKmXwali402ylm77D5GapsgQRn/Am7RTs=",
@@ -569,10 +579,10 @@
       "mscorlib.wzkfrp7u5k.wasm": "sha256-9PjsU0gaxxz5Vyw++p9DeYUWLsaXbaMS2RbX6wmTUmk=",
       "netstandard.d82br99ghv.wasm": "sha256-DS8keXxU4eQpa1kIoiFxOA2Ii2g9hoNWSaVi8F8AnIE=",
       "Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.otbthx34up.wasm": "sha256-HObfy7rnBCIi4EAwCyTFTYnYZzFGu8u1VOe+dJcZXgo=",
-      "iBlazorWebAssembly.krz0fl8mm3.wasm": "sha256-EJhkxlvOjjlC+jqrWffMJvv+fm9FtQhzSQUZs9DQGzA="
+      "iBlazorWebAssembly.kkv69uun7z.wasm": "sha256-VGZppLg8spVZgVPGkGPRNB9Q/QP3DVUVMTBDOCdxkfQ="
     },
     "pdb": {
-      "iBlazorWebAssembly.c3so9n5mpz.pdb": "sha256-yCbpNJ9Z72WKYZzVxZ1u6LaTmSfbg/RRq+NTXMLarxE="
+      "iBlazorWebAssembly.yisg432ajv.pdb": "sha256-agSeJcnRr1dr2AOc87nF9s+SJTd35nHSNu0kk1+l+q4="
     },
     "satelliteResources": {
       "cs": {

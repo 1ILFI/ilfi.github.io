@@ -1,14 +1,68 @@
-﻿
-<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+﻿@using iBlazorWebAssembly.Services
+@using Microsoft.FluentUI.AspNetCore.Components
+@inject ThemeService ThemeService
 
-<FluentDesignTheme StorageName="theme" />
+<!-- 更新 Fluent UI CSS 和脚本引用，使用更精确的引用路径 -->
+<HeadContent>
+    <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css" rel="stylesheet" />
+    <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/variables.css" rel="stylesheet" />
+    <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/tokens.css" rel="stylesheet" />
+    <script src="_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js" type="module" async></script>
+</HeadContent>
+
+<!-- 使用FluentDesignTheme替代旧的FluentDesignSystemProvider -->
+<FluentDesignTheme Mode="@_currentTheme.Mode" 
+                  OfficeColor="@_currentTheme.BrandColor" 
+                  OnLuminanceChanged="OnLuminanceChanged"
+                  StorageName="blog_theme">
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>未找到</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">抱歉，没有找到您请求的内容。</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+
+    <!-- 添加Fluent UI提供者组件 -->
+    <FluentToastProvider />
+    <FluentDialogProvider />
+    <FluentTooltipProvider />
+    <FluentMessageBarProvider />
+    <FluentMenuProvider />
+</FluentDesignTheme>
+
+@code {
+    private ThemeService.ThemeSettings _currentTheme = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 初始化主题
+        await ThemeService.InitializeThemeAsync();
+        _currentTheme = ThemeService.CurrentTheme;
+        
+        // 监听主题变更
+        ThemeService.OnThemeChanged += HandleThemeChanged;
+    }
+
+    private void HandleThemeChanged()
+    {
+        _currentTheme = ThemeService.CurrentTheme;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnLuminanceChanged(LuminanceChangedEventArgs args)
+    {
+        // 可以在这里响应系统主题变化
+    }
+
+    public void Dispose()
+    {
+        // 组件销毁时取消事件订阅
+        ThemeService.OnThemeChanged -= HandleThemeChanged;
+    }
+}

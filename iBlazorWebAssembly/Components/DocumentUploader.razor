@@ -1,0 +1,473 @@
+@inject IGitHubFileService GitHubService
+@inject IMetadataService<DocumentMetadata> MetadataService
+@inject IDialogService DialogService
+@inject FileJsInteropService FileService
+@inject AppSettings AppSettings
+
+<div class="document-uploader">
+    <h3>上传新文档</h3>
+
+    <!-- 文件选择部分 -->
+    @if (fileContent == null)
+    {
+        <div class="file-selector">
+            <div class="file-drop-zone @(isDragging ? "dragging" : "")" 
+                 @ondragenter="HandleDragEnter" 
+                 @ondragleave="HandleDragLeave" 
+                 @ondragover="HandleDragOver" 
+                 @ondrop="HandleDrop">
+                <FluentIcon Value="@(new Icons.Regular.Size48.DocumentAdd())" />
+                <p>拖放文件至此，或</p>
+                <FluentButton Appearance="Appearance.Accent" 
+                            OnClick="SelectFile" 
+                            IconStart="@(new Icons.Regular.Size20.FolderOpen())">
+                    选择文件
+                </FluentButton>
+            </div>
+            
+            <input type="file" id="fileInput" style="display:none;" @ref="fileInputReference" @onchange="HandleFileSelected" />
+            
+            <div class="supported-formats">
+                <FluentLabel>支持的文件格式:</FluentLabel>
+                <div class="format-badges">
+                    @foreach (var fileType in AppSettings.Document.SupportedFileTypes)
+                    {
+                        <FluentBadge Appearance="Appearance.Neutral">@fileType</FluentBadge>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- 文件详情表单 -->
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <div class="selected-file">
+                <FluentIcon Value="@fileType.GetIconForFileType()" />
+                <div>
+                    <span class="file-name">@fileName</span>
+                    <span class="file-size">(@((long)fileContent.Length).FormatFileSize())</span>
+                </div>
+                <FluentButton Appearance="Appearance.Stealth" 
+                            IconOnly 
+                            IconStart="@(new Icons.Regular.Size20.Delete())" 
+                            OnClick="ClearSelectedFile">
+                </FluentButton>
+            </div>
+            
+            <FluentTextField @bind-Value="documentTitle" Label="文档标题" Required />
+            
+            <FluentTextArea @bind-Value="documentDescription" Label="文档描述" Style="min-height: 80px;" />
+            
+            <div class="tags-section">
+                <FluentLabel>标签</FluentLabel>
+                <div class="tag-input">
+                    <div class="tag-list">
+                        @foreach (var tag in tags)
+                        {
+                            <FluentBadge Appearance="Appearance.Accent" 
+                                         DismissButtonClick="() => RemoveTag(tag)" 
+                                         Dismissable>
+                                @tag
+                            </FluentBadge>
+                        }
+                    </div>
+                    <div class="tag-add">
+                        <FluentTextField @bind-Value="newTag" 
+                                        Placeholder="添加标签..."
+                                        @onkeydown="TagInputKeyDown" />
+                        <FluentButton Appearance="Appearance.Lightweight"
+                                    IconOnly
+                                    IconStart="@(new Icons.Regular.Size20.Add())"
+                                    OnClick="AddTag"
+                                    Disabled="@string.IsNullOrWhiteSpace(newTag)">
+                        </FluentButton>
+                    </div>
+                </div>
+            </div>
+            
+            <FluentSelect @bind-Value="documentCategory" Label="分类" TOption="string" 
+                        Items="@categories" Placeholder="选择分类">
+            </FluentSelect>
+            
+            <FluentCheckbox @bind-Value="isPublic" Label="公开文档" />
+            
+            <div class="button-row">
+                <FluentButton Appearance="Appearance.Neutral" OnClick="ClearSelectedFile">
+                    取消
+                </FluentButton>
+                <FluentButton Appearance="Appearance.Accent" 
+                            OnClick="UploadDocument" 
+                            Disabled="@(string.IsNullOrWhiteSpace(documentTitle) || isUploading)"
+                            Loading="isUploading">
+                    @(isUploading ? "上传中..." : "上传文档")
+                </FluentButton>
+            </div>
+        </FluentStack>
+    }
+</div>
+
+<style>
+    .document-uploader {
+        padding: 1rem;
+    }
+    
+    .document-uploader h3 {
+        margin-top: 0;
+    }
+    
+    .file-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .file-drop-zone {
+        border: 2px dashed var(--blog-border-subtle);
+        border-radius: 8px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        transition: background-color 0.2s, border-color 0.2s;
+    }
+    
+    .file-drop-zone.dragging {
+        background-color: var(--blog-background-subtle);
+        border-color: var(--blog-accent);
+    }
+    
+    .supported-formats {
+        margin-top: 1rem;
+    }
+    
+    .format-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .selected-file {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        background-color: var(--blog-background-subtle);
+        border-radius: 4px;
+    }
+    
+    .file-name {
+        font-weight: 500;
+    }
+    
+    .file-size {
+        color: var(--blog-text-secondary);
+        font-size: 0.85rem;
+        margin-left: 0.25rem;
+    }
+    
+    .tags-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tag-input {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .tag-add {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .button-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    @@media (max-width: 768px) {
+        .file-drop-zone {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+@code {
+    [Parameter]
+    public EventCallback<DocumentMetadata> OnDocumentUploaded { get; set; }
+    
+    private byte[]? fileContent;
+    private string fileName = string.Empty;
+    private string fileType = string.Empty;
+    private ElementReference fileInputReference;
+    private bool isDragging = false;
+    
+    // 表单字段
+    private string documentTitle = string.Empty;
+    private string documentDescription = string.Empty;
+    private List<string> tags = new List<string>();
+    private string newTag = string.Empty;
+    private string documentCategory = string.Empty;
+    private bool isPublic = true;
+    private bool isUploading = false;
+    
+    // 分类列表，从AppSettings中获取
+    private List<string> categories = new();
+    
+    protected override void OnInitialized()
+    {
+        // 从AppSettings中初始化分类列表
+        categories = new List<string>(AppSettings.Document.Categories);
+    }
+    
+    private async Task SelectFile()
+    {
+        try
+        {
+            // 使用文件操作服务打开文件选择对话框
+            await FileService.OpenFileInputAsync("fileInput");
+        }
+        catch (Exception ex)
+        {
+            await DialogService.ShowErrorAsync("选择文件失败", ex.Message);
+        }
+    }
+    
+    private async Task HandleFileSelected(ChangeEventArgs e)
+    {
+        try
+        {
+            // 使用文件操作服务获取文件信息
+            var fileRef = await FileService.GetFileFromInputAsync("fileInput");
+            
+            if (fileRef != null)
+            {
+                // 获取文件属性
+                var fileProperties = await FileService.GetFilePropertiesAsync(fileRef);
+                fileName = fileProperties.Name;
+                
+                // 获取文件扩展名
+                fileType = Path.GetExtension(fileName).ToLowerInvariant();
+                
+                // 检查文件类型是否支持
+                if (!IsSupportedFileType(fileType))
+                {
+                    await DialogService.ShowErrorAsync("不支持的文件类型", $"不支持的文件类型: {fileType}。请上传支持的文件类型。");
+                    ClearSelectedFile();
+                    return;
+                }
+                
+                // 检查文件大小
+                if (fileProperties.Size > AppSettings.Document.MaxFileSizeMB * 1024 * 1024)
+                {
+                    await DialogService.ShowErrorAsync("文件过大", 
+                        $"文件大小超过限制：{fileProperties.Size.FormatFileSize()}。最大允许：{AppSettings.Document.MaxFileSizeMB} MB");
+                    ClearSelectedFile();
+                    return;
+                }
+                
+                // 读取文件内容
+                fileContent = await FileService.ReadFileAsArrayBufferAsync(fileRef);
+                
+                // 设置默认文档标题（使用文件名，不含扩展名）
+                documentTitle = Path.GetFileNameWithoutExtension(fileName);
+            }
+        }
+        catch (Exception ex)
+        {
+            await DialogService.ShowErrorAsync("处理文件失败", ex.Message);
+            ClearSelectedFile();
+        }
+    }
+    
+    private bool IsSupportedFileType(string extension)
+    {
+        return AppSettings.Document.SupportedFileTypes.Contains(extension.ToLowerInvariant());
+    }
+    
+    private void ClearSelectedFile()
+    {
+        fileContent = null;
+        fileName = string.Empty;
+        fileType = string.Empty;
+        documentTitle = string.Empty;
+        documentDescription = string.Empty;
+        tags.Clear();
+        newTag = string.Empty;
+        documentCategory = string.Empty;
+        isPublic = true;
+    }
+    
+    // 添加标签
+    private void AddTag()
+    {
+        if (!string.IsNullOrWhiteSpace(newTag) && !tags.Contains(newTag))
+        {
+            tags.Add(newTag);
+            newTag = string.Empty;
+        }
+    }
+    
+    // 移除标签
+    private void RemoveTag(string tag)
+    {
+        tags.Remove(tag);
+    }
+    
+    // 处理标签输入框的键盘事件
+    private void TagInputKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(newTag))
+        {
+            AddTag();
+        }
+    }
+    
+    private void HandleDragEnter(DragEventArgs e)
+    {
+        isDragging = true;
+    }
+    
+    private void HandleDragLeave(DragEventArgs e)
+    {
+        isDragging = false;
+    }
+    
+    private void HandleDragOver(DragEventArgs e)
+    {
+        // Blazor的DragEventArgs没有PreventDefault方法，默认已经阻止了默认行为
+    }
+    
+    private async Task HandleDrop(DragEventArgs e)
+    {
+        // Blazor的DragEventArgs没有PreventDefault方法，默认已阻止了默认行为
+        isDragging = false;
+        
+        try
+        {
+            // 使用FileJsInteropService处理拖放文件
+            var files = await FileService.GetDroppedFilesAsync(e);
+            
+            if (files != null && files.Length > 0)
+            {
+                // 获取第一个文件
+                var file = files[0];
+                fileName = file.Name;
+                
+                // 获取文件扩展名
+                fileType = Path.GetExtension(fileName).ToLowerInvariant();
+                
+                // 检查文件类型是否支持
+                if (!IsSupportedFileType(fileType))
+                {
+                    await DialogService.ShowErrorAsync("不支持的文件类型", $"不支持的文件类型: {fileType}。请上传支持的文件类型。");
+                    return;
+                }
+                
+                // 检查文件大小
+                if (file.Size > AppSettings.Document.MaxFileSizeMB * 1024 * 1024)
+                {
+                    await DialogService.ShowErrorAsync("文件过大", 
+                        $"文件大小超过限制：{((long)file.Size).FormatFileSize()}。最大允许：{AppSettings.Document.MaxFileSizeMB} MB");
+                    return;
+                }
+                
+                // 读取文件内容
+                fileContent = await FileService.ReadDroppedFileAsync(file);
+                
+                // 设置默认文档标题
+                documentTitle = Path.GetFileNameWithoutExtension(fileName);
+            }
+        }
+        catch (Exception ex)
+        {
+            await DialogService.ShowErrorAsync("处理拖放文件失败", ex.Message);
+        }
+    }
+    
+    // 上传文档到GitHub
+    private async Task UploadDocument()
+    {
+        if (fileContent == null || string.IsNullOrEmpty(documentTitle))
+        {
+            await DialogService.ShowErrorAsync("无法上传", "请选择文件并提供文档标题");
+            return;
+        }
+        
+        isUploading = true;
+        
+        try
+        {
+            // 创建唯一的文件名（使用GUID防止重名）
+            var uniqueFileName = $"{Guid.NewGuid():N}_{fileName}";
+            
+            // 上传文件到GitHub
+            var fileUrl = await GitHubService.UploadFileAsync(
+                fileContent, 
+                uniqueFileName, 
+                $"添加文档：{documentTitle}"
+            );
+            
+            if (!string.IsNullOrEmpty(fileUrl))
+            {
+                // 创建文档元数据
+                var newDocument = new DocumentMetadata
+                {
+                    Title = documentTitle,
+                    FileName = fileName,
+                    FileType = fileType,
+                    FileSize = fileContent.Length,
+                    Description = documentDescription,
+                    Tags = new List<string>(tags),
+                    Category = documentCategory,
+                    GitHubUrl = fileUrl,
+                    IsPublic = isPublic,
+                    Author = AppSettings.Blog.DefaultAuthor
+                };
+                
+                // 保存元数据到LocalStorage
+                await MetadataService.AddAsync(newDocument);
+                
+                // 清空表单
+                ClearSelectedFile();
+                
+                // 通知父组件上传成功
+                await OnDocumentUploaded.InvokeAsync(newDocument);
+                
+                // 显示成功消息
+                await DialogService.ShowInfoAsync(
+                    "上传成功",
+                    "文档已成功上传并保存元数据。",
+                    "确定"
+                );
+            }
+            else
+            {
+                await DialogService.ShowErrorAsync("上传失败", "无法获取上传文件的URL");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DialogService.ShowErrorAsync("上传文档失败", ex.Message);
+        }
+        finally
+        {
+            isUploading = false;
+        }
+    }
+}

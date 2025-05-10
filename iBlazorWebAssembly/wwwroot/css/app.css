@@ -1,13 +1,290 @@
-@import '_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css';
+/* 颜色管理系统 - 统一颜色变量 */
+:root {
+    /* 基础字体设置 */
+    --body-font: "Segoe UI Variable", "Segoe UI", sans-serif;
+    --code-font: "Cascadia Code", Consolas, "Courier New", monospace;
+    
+    /* 博客颜色系统 - 与Fluent UI主题变量集成 */
+    --blog-bg-primary: var(--neutral-layer-1);
+    --blog-bg-secondary: var(--neutral-layer-2);
+    --blog-bg-tertiary: var(--neutral-layer-3);
+    --blog-bg-quaternary: var(--neutral-layer-4);
+    
+    --blog-text-primary: var(--neutral-foreground-rest);
+    --blog-text-secondary: var(--neutral-foreground-hint);
+    --blog-text-tertiary: var(--neutral-foreground-subtle);
+    
+    --blog-accent-primary: var(--accent-fill-rest);
+    --blog-accent-secondary: var(--accent-fill-hover);
+    --blog-accent-tertiary: var(--accent-fill-active);
+    
+    --blog-link-default: var(--accent-foreground-rest);
+    --blog-link-hover: var(--accent-foreground-hover);
+    --blog-link-active: var(--accent-foreground-active);
+    
+    --blog-border-subtle: var(--neutral-stroke-divider-rest);
+    --blog-border-strong: var(--neutral-stroke-strong-rest);
+    --blog-border-input: var(--neutral-stroke-input-rest);
+    
+    --blog-shadow-card: 0 2px 8px var(--neutral-shadow-key-rest);
+    --blog-shadow-popup: 0 4px 16px var(--neutral-shadow-ambient-rest);
+    
+    /* 导航栏颜色系统 */
+    --nav-bg-primary: rgba(255, 255, 255, 0.05);
+    --nav-bg-hover: rgba(255, 255, 255, 0.1);
+    --nav-bg-active: rgba(255, 255, 255, 0.15);
+    --nav-text: var(--neutral-foreground-rest);
+    --nav-text-hover: var(--accent-foreground-rest);
+    --nav-text-active: var(--accent-foreground-hover);
+    --nav-border: rgba(255, 255, 255, 0.1);
+    --nav-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --nav-backdrop-filter: blur(5px);
+    
+    /* 图标颜色系统 */
+    --icon-primary: var(--neutral-foreground-rest);
+    --icon-secondary: var(--neutral-foreground-hint);
+    --icon-accent: var(--accent-foreground-rest);
+    --icon-success: var(--blog-status-success);
+    --icon-warning: var(--blog-status-warning);
+    --icon-error: var(--blog-status-error);
+    --nav-hamburger-color: rgba(255, 255, 255, 0.7);
+    
+    /* 交互元素颜色 */
+    --input-bg: var(--neutral-layer-3);
+    --input-border: var(--neutral-stroke-input-rest);
+    --input-text: var(--neutral-foreground-rest);
+    --input-placeholder: var(--neutral-foreground-hint);
+    --input-focus-border: var(--accent-stroke-control-rest);
+    
+    /* 卡片和容器样式 */
+    --card-bg: var(--neutral-layer-2);
+    --card-border: var(--neutral-stroke-divider-rest);
+    --card-shadow: var(--blog-shadow-card);
+    --card-shadow-hover: var(--blog-shadow-popup);
+    --container-padding: 1rem;
+    --container-border-radius: 8px;
+    
+    /* 代码高亮和引用块 */
+    --blog-code-bg: #f5f5f5;
+    --blog-quote-bg: #f9f9f9;
+    --blog-quote-border: #e0e0e0;
+    --blog-syntax-comment: #6a9955;
+    --blog-syntax-string: #ce9178;
+    --blog-syntax-keyword: #569cd6;
+    --blog-syntax-number: #b5cea8;
+    
+    /* 交互状态颜色 */
+    --blog-status-info: var(--error-fill-rest);
+    --blog-status-success: #107c10;
+    --blog-status-warning: #ff8c00;
+    --blog-status-error: #e74856;
+    
+    /* 过渡效果 */
+    --transition-fast: 0.1s ease;
+    --transition-medium: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* 暗色模式变量覆盖 */
+:root[data-fluent-theme="dark"] {
+    --blog-code-bg: #1e1e1e;
+    --blog-quote-bg: #252525;
+    --blog-quote-border: #444;
+    
+    /* 暗色模式特定交互状态颜色调整 */
+    --blog-status-success: #36b037;
+    --blog-status-warning: #ffaa44;
+    --blog-status-error: #f85a68;
+    
+    /* 导航栏暗色模式调整 */
+    --nav-bg-primary: rgba(0, 0, 0, 0.3);
+    --nav-bg-hover: rgba(255, 255, 255, 0.08);
+    --nav-bg-active: rgba(255, 255, 255, 0.12);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --nav-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --nav-hamburger-color: rgba(255, 255, 255, 0.7);
+    
+    /* 输入框暗色模式 */
+    --input-bg: rgba(0, 0, 0, 0.2);
+}
+
+/* 媒体查询支持系统偏好主题 */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-fluent-theme]) {
+        --blog-code-bg: #1e1e1e;
+        --blog-quote-bg: #252525;
+        --blog-quote-border: #444;
+    }
+}
 
 body {
-    --body-font: "Segoe UI Variable", "Segoe UI", sans-serif;
     font-family: var(--body-font);
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
     margin: 0;
+    background-color: var(--blog-bg-primary);
+    color: var(--blog-text-primary);
+    transition: background-color var(--transition-medium), color var(--transition-medium);
 }
 
+/* 链接样式统一 */
+a {
+    color: var(--blog-link-default);
+    transition: color var(--transition-fast);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--blog-link-hover);
+    text-decoration: underline;
+}
+
+a:active {
+    color: var(--blog-link-active);
+}
+
+/* 卡片统一样式 */
+.card {
+    background-color: var(--blog-bg-secondary);
+    border-radius: 8px;
+    box-shadow: var(--blog-shadow-card);
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--blog-shadow-popup);
+}
+
+/* 标签统一样式 */
+.tag {
+    background-color: var(--blog-bg-tertiary);
+    color: var(--blog-text-primary);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.85rem;
+    transition: background-color var(--transition-fast);
+}
+
+.tag:hover {
+    background-color: var(--blog-accent-primary);
+    color: white;
+}
+
+/* 代码块样式统一 */
+code {
+    font-family: var(--code-font);
+    background-color: var(--blog-code-bg);
+    color: var(--blog-text-primary);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+pre {
+    background-color: var(--blog-code-bg);
+    border-radius: 6px;
+    padding: 1em;
+    overflow-x: auto;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+/* 引用块样式 */
+blockquote {
+    background-color: var(--blog-quote-bg);
+    border-left: 4px solid var(--blog-quote-border);
+    margin: 1.5em 0;
+    padding: 1em 1.5em;
+}
+
+/* 导航栏应用颜色变量 */
+.floating-nav {
+    background-color: var(--nav-bg-primary);
+    box-shadow: var(--nav-shadow);
+    backdrop-filter: var(--nav-backdrop-filter);
+}
+
+.nav-header {
+    background-color: var(--nav-bg-primary);
+    border-bottom-color: var(--nav-border);
+}
+
+.nav-item:hover {
+    background-color: var(--nav-bg-hover);
+    box-shadow: 0 4px 12px var(--nav-border);
+}
+
+.nav-link {
+    color: var(--nav-text);
+    background-color: var(--nav-bg-primary);
+}
+
+.nav-link:hover {
+    color: var(--nav-text-hover);
+    background-color: var(--nav-bg-hover);
+}
+
+.nav-link.active {
+    color: var(--nav-text-active);
+    background-color: var(--nav-bg-active);
+}
+
+/* 头部组件颜色应用 */
+.header-container {
+    background-color: var(--blog-bg-primary);
+    color: var(--blog-text-primary);
+}
+
+.user-name {
+    color: var(--blog-text-primary);
+}
+
+.user-id {
+    color: var(--blog-text-secondary);
+}
+
+/* 表单和输入框 */
+.form-control {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+}
+
+.form-control::placeholder {
+    color: var(--input-placeholder);
+}
+
+.form-control:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 2px var(--input-focus-border);
+}
+
+/* 图标应用全局颜色变量 */
+.fluent-icon {
+    color: var(--icon-primary);
+}
+
+.icon-accent {
+    color: var(--icon-accent);
+}
+
+.icon-success {
+    color: var(--icon-success);
+}
+
+.icon-warning {
+    color: var(--icon-warning);
+}
+
+.icon-error {
+    color: var(--icon-error);
+}
+
+/* 保留原有样式 */
 .navmenu-icon {
     display: none;
 }
@@ -31,31 +308,53 @@ body {
 }
 
 footer {
-    background: var(--neutral-layer-4);
-    color: var(--neutral-foreground-rest);
+    background: var(--blog-bg-quaternary);
+    color: var(--blog-text-primary);
     align-items: center;
     padding: 10px 10px;
 }
 
-    footer a {
-        color: var(--neutral-foreground-rest);
-        text-decoration: none;
-    }
+footer a {
+    color: var(--blog-text-primary);
+}
 
-        footer a:focus {
-            outline: 1px dashed;
-            outline-offset: 3px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
+footer a:focus {
+    outline: 1px dashed;
+    outline-offset: 3px;
+}
 
 .alert {
-    border: 1px dashed var(--accent-fill-rest);
+    border: 1px dashed var(--blog-accent-primary);
     padding: 5px;
 }
 
+/* 状态指示器样式 */
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-info {
+    background-color: var(--accent-fill-rest);
+    color: white;
+}
+
+.status-success {
+    background-color: var(--blog-status-success);
+    color: white;
+}
+
+.status-warning {
+    background-color: var(--blog-status-warning);
+    color: white;
+}
+
+.status-error {
+    background-color: var(--blog-status-error);
+    color: white;
+}
 
 #blazor-error-ui {
     background: lightyellow;
@@ -119,10 +418,6 @@ footer {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
-
-code {
-    color: #c02d76;
-}
 
 @media (max-width: 600px) {
     .header-gutters {

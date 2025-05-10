@@ -55,6 +55,10 @@
               "target": "Package",
               "version": "[4.5.0, )"
             },
+            "DocumentFormat.OpenXml": {
+              "target": "Package",
+              "version": "[3.3.0, )"
+            },
             "MSTest.TestAdapter": {
               "target": "Package",
               "version": "[3.8.3, )"
@@ -62,6 +66,10 @@
             "MSTest.TestFramework": {
               "target": "Package",
               "version": "[3.8.3, )"
+            },
+            "Markdig": {
+              "target": "Package",
+              "version": "[0.41.1, )"
             },
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
@@ -95,6 +103,10 @@
               "target": "Package",
               "version": "[9.0.4, )",
               "autoReferenced": true
+            },
+            "Octokit": {
+              "target": "Package",
+              "version": "[14.0.0, )"
             }
           },
           "imports": [

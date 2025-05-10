@@ -1,0 +1,74 @@
+@inject ThemeService ThemeService
+
+<FluentButton OnClick="ToggleThemeMode" 
+              Icon="@GetCurrentThemeIcon()" 
+              Appearance="Appearance.Accent" 
+              Title="切换主题模式"
+              Style="min-width: 120px; color: var(--neutral-foreground-inverted);">
+    @_buttonText
+</FluentButton>
+
+@code {
+    private string _buttonText = "暗色模式";
+    private DesignThemeModes _currentMode = DesignThemeModes.Light;
+
+    // 组件初始化时从主题服务获取当前状态
+    protected override void OnInitialized()
+    {
+        _currentMode = ThemeService.CurrentTheme.Mode;
+        UpdateUIElements(_currentMode);
+        
+        // 订阅主题变更事件
+        ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
+    private async Task ToggleThemeMode()
+    {
+        // 循环切换主题: Light -> Dark -> System
+        var nextMode = _currentMode switch
+        {
+            DesignThemeModes.Light => DesignThemeModes.Dark,
+            DesignThemeModes.Dark => DesignThemeModes.System,
+            DesignThemeModes.System => DesignThemeModes.Light,
+            _ => DesignThemeModes.System
+        };
+
+        await ThemeService.SetThemeModeAsync(nextMode);
+    }
+
+    private void OnThemeChanged()
+    {
+        _currentMode = ThemeService.CurrentTheme.Mode;
+        UpdateUIElements(_currentMode);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateUIElements(DesignThemeModes mode)
+    {
+        _buttonText = mode switch
+        {
+            DesignThemeModes.Light => "亮色模式",
+            DesignThemeModes.Dark => "暗色模式",
+            DesignThemeModes.System => "系统模式",
+            _ => "亮色模式"
+        };
+    }
+
+    // 获取当前主题对应的图标
+    private Icon GetCurrentThemeIcon()
+    {
+        return _currentMode switch
+        {
+            DesignThemeModes.Light => new Icons.Regular.Size20.WeatherMoon(),
+            DesignThemeModes.Dark => new Icons.Regular.Size20.WeatherSunny(),
+            DesignThemeModes.System => new Icons.Regular.Size20.Settings(),
+            _ => new Icons.Regular.Size20.WeatherSunny()
+        };
+    }
+
+    // 组件销毁时解除事件订阅
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
+    }
+}

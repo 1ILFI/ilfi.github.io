@@ -2,15 +2,48 @@
 
 <div class="floating-nav @(isMinimized ? "minimized" : "expanded")" id="floatingNavMenu" style="@GetPositionStyle()">
     <div class="nav-header @(isDragging ? "dragging" : "")" @onmousedown="StartDrag" @onmouseup="StopDrag" @ondblclick="ToggleMinimize">
-        <FluentButton Class="collapse-btn" @onclick="ToggleMinimize" IconStart="@(new Icons.Regular.Size24.Navigation())">
-        </FluentButton>
+        <!-- 使用纯图标代替按钮，去除按钮背景 -->
+        <div class="nav-icon-container" @onclick="ToggleMinimize">
+            <FluentIcon Value="@(new Icons.Regular.Size24.Navigation())" />
+        </div>
     </div>
     <div class="nav-content">
         <nav class="flex-column">
             @foreach (var item in MenuItems)
             {
                 <div class="nav-item">
-                    <NavMenuItem Item="item" />
+                    @if (item.IsGroup)
+                    {
+                        <details open>
+                            <summary>
+                                <span class="nav-link">
+                                    <span class="menu-icon">
+                                        <FluentIcon Value="@GetIconForMenuItem(item)" Size="Size.Size48" />
+                                    </span>
+                                </span>
+                            </summary>
+                            <div class="nav-group-items">
+                                @foreach (var childItem in item.Children)
+                                {
+                                    <div class="nav-item">
+                                        <NavLink class="nav-link" href="@childItem.Href" Match="NavLinkMatch.All" disabled="@childItem.Disabled">
+                                            <span class="menu-icon">
+                                                <FluentIcon Value="@GetIconForMenuItem(childItem)" Size="Size.Size48" />
+                                            </span>
+                                        </NavLink>
+                                    </div>
+                                }
+                            </div>
+                        </details>
+                    }
+                    else
+                    {
+                        <NavLink class="nav-link" href="@item.Href" Match="NavLinkMatch.All" disabled="@item.Disabled">
+                            <span class="menu-icon">
+                                <FluentIcon Value="@GetIconForMenuItem(item)" Size="Size.Size48" />
+                            </span>
+                        </NavLink>
+                    }
                 </div>
             }
         </nav>
@@ -42,11 +75,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await InitializeMenuItems();
+        InitializeMenuItems();
         await LoadNavMenuPosition();
     }
+    
+    // 获取菜单项对应的图标
+    private Icon GetIconForMenuItem(MenuItem item)
+    {
+        return item.IconType switch
+        {
+            "Home" => new Icons.Regular.Size24.Home(),
+            "AddCircle" => new Icons.Regular.Size24.Add(),
+            "Toolbox" => new Icons.Regular.Size24.Toolbox(),
+            "DesignIdeas" => new Icons.Regular.Size24.DesignIdeas(),
+            "WeatherPartlyCloudyDay" => new Icons.Regular.Size24.WeatherPartlyCloudyDay(),
+            "Link" => new Icons.Regular.Size24.Link(),
+            "Settings" => new Icons.Regular.Size24.Settings(),
+            "DataManagement" => new Icons.Regular.Size24.BookDatabase(),
+            _ => new Icons.Regular.Size24.Home()
+        };
+    }
 
-    private async Task InitializeMenuItems()
+    private void InitializeMenuItems()
     {
         // 初始化菜单项
         MenuItems.Add(new MenuItem

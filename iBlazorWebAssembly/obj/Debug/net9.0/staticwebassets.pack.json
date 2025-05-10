@@ -29,6 +29,14 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
+      "Id": "C:\\Users\\ILFI\\ibolg\\iBlazorWebAssembly\\wwwroot\\js\\ColorManager.js",
+      "PackagePath": "staticwebassets\\js\\ColorManager.js"
+    },
+    {
+      "Id": "C:\\Users\\ILFI\\ibolg\\iBlazorWebAssembly\\wwwroot\\js\\FileOperations.js",
+      "PackagePath": "staticwebassets\\js\\FileOperations.js"
+    },
+    {
       "Id": "C:\\Users\\ILFI\\ibolg\\iBlazorWebAssembly\\wwwroot\\js\\NavMenuService.js",
       "PackagePath": "staticwebassets\\js\\NavMenuService.js"
     },

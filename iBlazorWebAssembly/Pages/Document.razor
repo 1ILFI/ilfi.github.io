@@ -1,7 +1,15 @@
 @page "/document"
 @using System.Diagnostics.CodeAnalysis
+@using iBlazorWebAssembly.Models
+@using iBlazorWebAssembly.Services
+@using iBlazorWebAssembly.Components
+@inject IMetadataService<DocumentMetadata> MetadataService
+@inject IDocumentProcessingService DocumentService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject IDialogService DialogService
 
-<PageTitle>文档</PageTitle>
+<PageTitle>文档中心</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
     <FluentCard>
@@ -9,8 +17,24 @@
         <p>这里是文档页面，您可以在这里找到各种技术文档和学习资料。</p>
     </FluentCard>
 
+    <!-- 添加和上传文档按钮 -->
+    @if (showUploader)
+    {
+        <FluentCard>
+            <DocumentUploader OnDocumentUploaded="HandleDocumentUploaded" />
+        </FluentCard>
+    }
+    else
+    {
+        <FluentButton Appearance="Appearance.Accent" 
+                      OnClick="@(() => showUploader = true)" 
+                      IconStart="@(new Icons.Regular.Size20.DocumentAdd())">
+            上传新文档
+        </FluentButton>
+    }
+
     <!-- 筛选器部分 -->
-    <FluentCard AreaRestricted="false" >
+    <FluentCard AreaRestricted="false">
         <div class="filter-container">
             <!-- 使用FluentStack实现水平布局 -->
             <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="16" VerticalAlignment="VerticalAlignment.Bottom" Style="flex-wrap: wrap;">
@@ -34,7 +58,7 @@
                 <div style="min-width: 300px; flex: 1;">
                     <FluentLabel>标签:</FluentLabel>
                     <div class="tag-container">
-                        @foreach (var tag in tags)
+                        @foreach (var tag in allTags)
                         {
                             <FluentBadge Appearance="@(selectedTags.Contains(tag) ? Appearance.Accent : Appearance.Neutral)" 
                                         @onclick="() => ToggleTag(tag)" 
@@ -48,109 +72,280 @@
         </div>
     </FluentCard>
 
-    <!-- 文档列表部分 -->
-    <FluentGrid Columns="3" Style="grid-gap: 12px;">
-        @foreach (var document in FilteredDocuments())
-        {
-            <FluentGridItem>
-                <FluentCard>
-                    <div class="card-header">
-                        <FluentIcon Value="@GetIconForCategory(document.Category)" Slot="start" />
-                        <h3>@document.Title</h3>
-                    </div>
-                    <div class="card-content">
-                        <p>@document.Description</p>
-                        <FluentDivider></FluentDivider>
-                        <div class="tag-list">
-                            @foreach (var tag in document.Tags)
-                            {
-                                <FluentBadge Appearance="Appearance.Neutral">@tag</FluentBadge>
-                            }
+    @if (isLoading)
+    {
+        <div style="display: flex; justify-content: center; margin: 2rem;">
+            <FluentProgressRing />
+        </div>
+    }
+    else if (!filteredDocuments.Any())
+    {
+        <FluentCard>
+            <div style="text-align: center; padding: 2rem;">
+                <FluentIcon Value="@(new Icons.Regular.Size24.DocumentSearch())" />
+                <h3>暂无文档</h3>
+                <p>没有找到符合条件的文档，请尝试更改筛选条件或上传新文档。</p>
+            </div>
+        </FluentCard>
+    }
+    else
+    {
+        <!-- 文档列表部分 -->
+        <FluentGrid Columns="3" Style="grid-gap: 12px;">
+            @foreach (var document in filteredDocuments)
+            {
+                <FluentGridItem>
+                    <FluentCard class="document-card" @onclick="@(() => NavigateToDocument(document))">
+                        <div class="card-header">
+                            <FluentIcon Value="@GetIconForFileType(document.FileType)" Slot="start" />
+                            <h3>@document.Title</h3>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <FluentButton Appearance="Appearance.Accent">查看文档</FluentButton>
-                    </div>
-                </FluentCard>
-            </FluentGridItem>
-        }
-    </FluentGrid>
+                        <div class="card-content">
+                            <p class="description">@(string.IsNullOrEmpty(document.Description) ? "暂无描述" : document.Description)</p>
+                            <FluentDivider></FluentDivider>
+                            <div class="meta-info">
+                                <span class="file-type">@document.FileType</span>
+                                <span class="file-size">@FormatFileSize(document.FileSize)</span>
+                                <span class="upload-date">@document.CreatedAt.ToString("yyyy-MM-dd")</span>
+                            </div>
+                            <div class="tag-list">
+                                @foreach (var tag in document.Tags.Take(3))
+                                {
+                                    <FluentBadge Appearance="Appearance.Neutral">@tag</FluentBadge>
+                                }
+                                @if (document.Tags.Count > 3)
+                                {
+                                    <FluentBadge Appearance="Appearance.Neutral">+@(document.Tags.Count - 3)</FluentBadge>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <FluentButton Appearance="Appearance.Accent" 
+                                        IconStart="@(new Icons.Regular.Size20.ArrowDownload())"
+                                        OnClick="@(async (e) => { await JSRuntime.InvokeVoidAsync("event.stopPropagation"); await DownloadDocument(document); })">
+                                下载
+                            </FluentButton>
+                            <FluentButton Appearance="Appearance.Neutral" 
+                                        IconStart="@(new Icons.Regular.Size20.Eye())"
+                                        OnClick="@(async (e) => { await JSRuntime.InvokeVoidAsync("event.stopPropagation"); await ViewDocument(document); })">
+                                查看
+                            </FluentButton>
+                            <FluentButton Appearance="Appearance.Stealth" 
+                                        IconStart="@(new Icons.Regular.Size20.Delete())"
+                                        OnClick="@(async (e) => { await JSRuntime.InvokeVoidAsync("event.stopPropagation"); await DeleteDocument(document); })">
+                                删除
+                            </FluentButton>
+                        </div>
+                    </FluentCard>
+                </FluentGridItem>
+            }
+        </FluentGrid>
+    }
 </FluentStack>
 
+<!-- 文档预览对话框 -->
+<FluentDialog @ref="previewDialog" Modal="true" Title="@previewDocumentTitle">
+    <FluentDialogBody>
+        @if (!string.IsNullOrEmpty(previewDocumentContent))
+        {
+            @if (previewDocumentType == ".md")
+            {
+                <div class="markdown-preview">
+                    @((MarkupString)previewDocumentContent)
+                </div>
+            }
+            else
+            {
+                <div class="document-preview">
+                    @((MarkupString)previewDocumentContent)
+                </div>
+            }
+        }
+        else
+        {
+            <div style="display: flex; justify-content: center; padding: 2rem;">
+                <FluentProgressRing />
+            </div>
+        }
+    </FluentDialogBody>
+    <FluentDialogFooter>
+        <FluentButton Appearance="Appearance.Stealth" OnClick="ClosePreviewDialog">关闭</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@(() => NavigateToDocument(currentDocument!))">
+            查看详情
+        </FluentButton>
+    </FluentDialogFooter>
+</FluentDialog>
+
+<style>
+    .filter-container {
+        padding: 1rem;
+    }
+    
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+    }
+    
+    .document-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .document-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--elevated-box-shadow);
+    }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .card-content {
+        flex: 1;
+        overflow: hidden;
+    }
+    
+    .description {
+        max-height: 4.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        margin-bottom: 0.5rem;
+    }
+    
+    .meta-info {
+        display: flex;
+        justify-content: space-between;
+        color: var(--blog-text-secondary);
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+    }
+    
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .markdown-preview, .document-preview {
+        padding: 1rem;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    @@media (max-width: 768px) {
+        .document-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
 @code {
+    // 文档上传相关
+    private bool showUploader = false;
+
+    // 文档列表相关
+    private List<DocumentMetadata> documents = new();
+    private bool isLoading = true;
+
     // 筛选相关变量
     private string selectedCategory = string.Empty;
     private string searchText = string.Empty;
-    private List<string> selectedTags = new List<string>();
+    private List<string> selectedTags = new();
+    private List<string> allTags = new();
+    private List<string> categories = new();
 
-    // 分类列表 - 简化为全部、Android、Windows和Game
-    private List<string> categories = new List<string> 
-    { 
-        string.Empty, // 全部
-        "Android", 
-        "Windows", 
-        "Game"
-    };
+    // 预览对话框相关
+    private FluentDialog? previewDialog;
+    private string previewDocumentTitle = string.Empty;
+    private string previewDocumentContent = string.Empty;
+    private string previewDocumentType = string.Empty;
+    private DocumentMetadata? currentDocument;
 
-    // 标签列表
-    private List<string> tags = new List<string>
+    // 计算属性-过滤后的文档列表
+    private List<DocumentMetadata> filteredDocuments => documents
+        .Where(doc => 
+            (string.IsNullOrEmpty(selectedCategory) || doc.Category == selectedCategory) &&
+            (string.IsNullOrEmpty(searchText) || 
+             doc.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase) || 
+             doc.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
+            (selectedTags.Count == 0 || doc.Tags.Any(t => selectedTags.Contains(t)))
+        )
+        .OrderByDescending(d => d.CreatedAt)
+        .ToList();
+
+    protected override async Task OnInitializedAsync()
     {
-        "C#",
-        "Java",
-        "Unity",
-        "移动开发",
-        "桌面应用",
-        "游戏引擎"
-    };
-
-    // 文档数据模型
-    private class DocumentItem
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
-        public List<string> Tags { get; set; } = new List<string>();
+        await LoadDocuments();
     }
 
-    // 文档数据 - 简化为3个示例
-    private List<DocumentItem> documents = new List<DocumentItem>
+    private async Task LoadDocuments()
     {
-        new DocumentItem 
-        { 
-            Title = "Android Studio 开发指南", 
-            Description = "全面了解Android Studio的使用方法和Android应用开发流程。",
-            Category = "Android",
-            Tags = new List<string> { "Java", "移动开发" }
-        },
-        new DocumentItem 
-        { 
-            Title = "Windows应用开发", 
-            Description = "使用WPF和UWP开发现代Windows桌面应用程序。",
-            Category = "Windows",
-            Tags = new List<string> { "C#", "桌面应用" }
-        },
-        new DocumentItem 
-        { 
-            Title = "Unity游戏开发入门", 
-            Description = "Unity游戏引擎的基础知识和开发流程介绍。",
-            Category = "Game",
-            Tags = new List<string> { "C#", "Unity", "游戏引擎" }
-        }
-    };
+        isLoading = true;
 
-    // 根据文档类别返回相应图标 - 修改返回类型为具体的图标类型
-    private Microsoft.FluentUI.AspNetCore.Components.Icon GetIconForCategory(string category)
-    {
-        return category switch
+        try
         {
-            "Android" => new Icons.Regular.Size24.Phone(),
-            "Windows" => new Icons.Regular.Size24.Window(),
-            "Game" => new Icons.Regular.Size24.Games(),
-            _ => new Icons.Regular.Size24.DocumentText() // 默认图标
-        };
+            // 从LocalStorage加载文档元数据，并显式转换为 List<DocumentMetadata>
+            var result = await MetadataService.GetAllAsync();
+            documents = result?.ToList() ?? new List<DocumentMetadata>();
+
+            // 收集所有标签和分类
+            var tagSet = new HashSet<string>();
+            var categorySet = new HashSet<string>();
+
+            foreach (var doc in documents)
+            {
+                foreach (var tag in doc.Tags)
+                {
+                    tagSet.Add(tag);
+                }
+
+                if (!string.IsNullOrEmpty(doc.Category))
+                {
+                    categorySet.Add(doc.Category);
+                }
+            }
+
+            allTags = tagSet.ToList();
+            categories = categorySet.ToList();
+        }
+        catch (Exception ex)
+        {
+            await DialogService.ShowErrorAsync("加载文档失败", ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
-    // 切换标签选择状态
     private void ToggleTag(string tag)
     {
         if (selectedTags.Contains(tag))
@@ -163,13 +358,165 @@
         }
     }
 
-    // 根据筛选条件过滤文档
-    private List<DocumentItem> FilteredDocuments()
+    private Microsoft.FluentUI.AspNetCore.Components.Icon GetIconForFileType(string fileType)
     {
-        return documents.Where(doc => 
-            (string.IsNullOrEmpty(selectedCategory) || doc.Category == selectedCategory) &&
-            (string.IsNullOrEmpty(searchText) || doc.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase) || doc.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
-            (selectedTags.Count == 0 || doc.Tags.Any(t => selectedTags.Contains(t)))
-        ).ToList();
+        return fileType.ToLowerInvariant() switch
+        {
+            ".docx" or ".doc" => new Icons.Regular.Size24.Document(),
+            ".xlsx" or ".xls" => new Icons.Regular.Size24.Table(),
+            ".pptx" or ".ppt" => new Icons.Regular.Size24.SlideText(),
+            ".pdf" => new Icons.Regular.Size24.DocumentPdf(),
+            ".md" => new Icons.Regular.Size24.DocumentText(),
+            ".txt" => new Icons.Regular.Size24.TextAlignLeft(),
+            _ => new Icons.Regular.Size24.Document()
+        };
+    }
+
+    private string FormatFileSize(long bytes)
+    {
+        string[] suffixes = { "B", "KB", "MB", "GB" };
+        int counter = 0;
+        decimal number = bytes;
+        
+        while (Math.Round(number / 1024) >= 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+        
+        return $"{number:n1} {suffixes[counter]}";
+    }
+
+    private async Task HandleDocumentUploaded(DocumentMetadata document)
+    {
+        showUploader = false;
+        await LoadDocuments();
+    }
+
+    private async Task DownloadDocument(DocumentMetadata document)
+    {
+        if (string.IsNullOrEmpty(document.GitHubUrl))
+        {
+            await DialogService.ShowErrorAsync("下载失败", "文档URL不可用");
+            return;
+        }
+
+        // 使用JS下载文件
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("fileOperations.openInNewTab", document.GitHubUrl);
+        }
+        catch
+        {
+            await JSRuntime.InvokeVoidAsync("window.open", document.GitHubUrl, "_blank");
+        }
+    }
+
+    private async Task ViewDocument(DocumentMetadata document)
+    {
+        if (document == null || string.IsNullOrEmpty(document.GitHubUrl))
+        {
+            await DialogService.ShowErrorAsync("预览失败", "文档链接无效");
+            return;
+        }
+
+        currentDocument = document;
+        previewDocumentTitle = document.Title;
+        previewDocumentType = document.FileType;
+        previewDocumentContent = string.Empty;
+
+        // 显示对话框并立即设置加载状态，确保UI响应
+        if (previewDialog != null)
+        {
+            previewDialog.Show();
+            StateHasChanged(); // 立即刷新UI，确保显示加载中状态
+        }
+
+        try
+        {
+            // 创建可以取消的请求
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(15)); // 缩短超时时间为15秒，避免用户等待过长
+            
+            // 获取文件内容并进行处理
+            var httpClient = new HttpClient();
+            
+            try
+            {
+                Console.WriteLine($"正在加载文档: {document.Title} 从URL: {document.GitHubUrl}");
+                var content = await httpClient.GetByteArrayAsync(document.GitHubUrl, cts.Token);
+                Console.WriteLine($"文档内容已获取，大小: {content.Length} 字节");
+                
+                // 根据文件类型进行不同处理
+                previewDocumentContent = await DocumentService.ConvertDocumentToHtmlAsync(content, document.FileType);
+                Console.WriteLine("文档已成功转换为HTML");
+            }
+            catch (OperationCanceledException)
+            {
+                previewDocumentContent = "<p>请求超时，请检查您的网络连接或稍后重试。</p>";
+                Console.WriteLine("文档加载超时");
+                await DialogService.ShowErrorAsync("预览失败", "请求超时，无法加载文档内容");
+            }
+            catch (HttpRequestException ex)
+            {
+                previewDocumentContent = $"<p>网络请求失败: {ex.Message}</p>";
+                Console.WriteLine($"HTTP请求错误: {ex.Message}");
+                await DialogService.ShowErrorAsync("预览失败", $"网络请求失败: {ex.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            previewDocumentContent = $"<p>预览失败: {ex.Message}</p>";
+            Console.WriteLine($"预览过程中出现异常: {ex.Message}");
+            await DialogService.ShowErrorAsync("预览失败", ex.Message);
+        }
+        finally
+        {
+            // 确保无论如何都会更新UI，防止永久加载状态
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteDocument(DocumentMetadata document)
+    {
+        var dialogReference = await DialogService.ShowConfirmationAsync(
+            "确认删除",
+            $"确定要删除文档 \"{document.Title}\" 吗？此操作无法恢复。"
+        );
+        
+        var result = await dialogReference.Result;
+        if (!result.Cancelled)
+        {
+            try
+            {
+                // 从元数据中删除
+                await MetadataService.DeleteAsync(document.Id);
+
+                // 重新加载文档列表
+                await LoadDocuments();
+
+                await DialogService.ShowInfoAsync("删除成功", "文档已成功删除");
+            }
+            catch (Exception ex)
+            {
+                await DialogService.ShowErrorAsync("删除失败", ex.Message);
+            }
+        }
+    }
+
+    private void ClosePreviewDialog()
+    {
+        if (previewDialog != null)
+        {
+            previewDialog.Hide(); // 使用 Hide() 替代 HideAsync()
+        }
+    }
+    
+    private void NavigateToDocument(DocumentMetadata document)
+    {
+        if (document != null && !string.IsNullOrEmpty(document.Id))
+        {
+            NavigationManager.NavigateTo($"/document/{document.Id}");
+        }
     }
 }

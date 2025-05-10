@@ -28,8 +28,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Layout/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Components/DocumentUploader.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xEb2N1bWVudFVwbG9hZGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Components/ThemeSettings.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUaGVtZVNldHRpbmdzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Components/ThemeToggle.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUaGVtZVRvZ2dsZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ILFI/ibolg/iBlazorWebAssembly/Pages/Admin.razor]
@@ -48,6 +56,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcYWRtaW5cQmxvZ1NldHRpbmdzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Pages/DocumentDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRG9jdW1lbnREZXRhaWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ILFI/ibolg/iBlazorWebAssembly/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -64,10 +76,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Components/AdminSettingsMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBZG1pblNldHRpbmdzTWVudS5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-uvks48yupg
-
 [C:/Users/ILFI/ibolg/iBlazorWebAssembly/Components/HeaderComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xIZWFkZXJDb21wb25lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-vmw2uibslh
@@ -79,6 +87,10 @@ build_metadata.AdditionalFiles.CssScope = b-1qwwoph1yo
 [C:/Users/ILFI/ibolg/iBlazorWebAssembly/Layout/AdminLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEFkbWluTGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-ot9uukpsar
+
+[C:/Users/ILFI/ibolg/iBlazorWebAssembly/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-hb920nbbh5
 
 [C:/Users/ILFI/ibolg/iBlazorWebAssembly/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=

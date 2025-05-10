@@ -1,0 +1,335 @@
+@inject ThemeService ThemeService
+@inject IJSRuntime JSRuntime
+
+<FluentCard AreaRestricted="false">
+    <FluentDesignTheme @bind-Mode="@_currentMode"
+                       @bind-OfficeColor="@_currentColor"
+                       OnLoaded="@OnThemeLoaded"
+                       OnLuminanceChanged="@OnLuminanceChanged"
+                       StorageName="blog_theme" />
+
+    <!-- 主题模式选择器 -->
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="12" Style="padding: 16px;">
+        <FluentLabel Typo="Typography.Body">主题设置</FluentLabel>
+        <FluentDivider></FluentDivider>
+        
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="20" VerticalAlignment="VerticalAlignment.Center">
+            <FluentSelect Label="主题模式"
+                          Width="250px"
+                          Items="@(Enum.GetValues<DesignThemeModes>())"
+                          @bind-SelectedOption="@_currentMode">
+                <OptionTemplate>
+                    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="8">
+                        <FluentIcon Value="@GetThemeIcon(context)" />
+                        <FluentLabel>@GetThemeDisplayName(context)</FluentLabel>
+                    </FluentStack>
+                </OptionTemplate>
+            </FluentSelect>
+
+            <FluentButton Appearance="Appearance.Outline" OnClick="ToggleAdvancedSettings">
+                @(_showAdvanced ? "收起高级选项" : "显示高级选项")
+            </FluentButton>
+        </FluentStack>
+
+        <!-- 预设颜色选择器 -->
+        <FluentLabel Typo="Typography.Body">品牌颜色</FluentLabel>
+        <FluentStack Orientation="Orientation.Horizontal" Wrap="true" HorizontalGap="10" VerticalAlignment="VerticalAlignment.Center">
+            @foreach (var officeColor in Enum.GetValues<OfficeColor>())
+            {
+                <div class="color-swatch @(_currentColor == officeColor ? "selected" : "")" 
+                     style="background-color: @GetOfficeColorCode(officeColor);"
+                     @onclick="() => SelectOfficeColor(officeColor)"
+                     title="@officeColor.ToString()">
+                </div>
+            }
+        </FluentStack>
+        
+        <!-- 自定义颜色选择器 -->
+        @if(_showAdvanced)
+        {
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12" Style="margin-top: 12px;">
+                <FluentLabel Typo="Typography.Body">自定义颜色</FluentLabel>
+                
+                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12" VerticalAlignment="VerticalAlignment.Center">
+                    <input type="color" @bind-value="_customColorHex" @bind-value:event="oninput" 
+                           style="width: 40px; height: 40px; padding: 0; border: none;" />
+                    
+                    <FluentTextField @bind-Value="_customColorHex" Style="width: 100px;" />
+                    
+                    <FluentButton Appearance="Appearance.Accent" 
+                                 OnClick="ApplyCustomColor"
+                                 Disabled="@(!IsValidHexColor(_customColorHex))">
+                        应用自定义颜色
+                    </FluentButton>
+                    
+                    <FluentButton Appearance="Appearance.Outline" 
+                                 OnClick="GenerateRandomColor">
+                        随机生成
+                    </FluentButton>
+                </FluentStack>
+                
+                <FluentLabel Typo="Typography.Body">自动生成配色方案</FluentLabel>
+                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12">
+                    <FluentButton Appearance="Appearance.Outline" OnClick="GenerateComplementaryScheme">互补色方案</FluentButton>
+                    <FluentButton Appearance="Appearance.Outline" OnClick="GenerateSplitComplementaryScheme">分裂互补色</FluentButton>
+                    <FluentButton Appearance="Appearance.Outline" OnClick="GenerateTriadicScheme">三角色方案</FluentButton>
+                    <FluentButton Appearance="Appearance.Outline" OnClick="GenerateMonochromaticScheme">单色方案</FluentButton>
+                </FluentStack>
+            </FluentStack>
+        }
+        
+        <!-- 主题预览 -->
+        <FluentStack Style="margin-top: 20px; padding: 20px; border: 1px solid var(--blog-border-subtle); border-radius: 8px;">
+            <FluentLabel Typo="Typography.Body">主题预览</FluentLabel>
+            <FluentDivider></FluentDivider>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="12" Style="margin: 16px 0;">
+                <FluentButton Appearance="Appearance.Outline">轮廓按钮</FluentButton>
+                <FluentButton>默认按钮</FluentButton>
+                <FluentButton Appearance="Appearance.Accent">主题按钮</FluentButton>
+            </FluentStack>
+            
+            <FluentDivider></FluentDivider>
+            
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="12" Style="margin: 16px 0;">
+                <div class="status-badge status-info">信息</div>
+                <div class="status-badge status-success">成功</div>
+                <div class="status-badge status-warning">警告</div>
+                <div class="status-badge status-error">错误</div>
+            </FluentStack>
+            
+            <FluentDivider></FluentDivider>
+            
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="16" Style="margin: 16px 0;">
+                <div class="preview-element">
+                    <FluentLabel>文本元素</FluentLabel>
+                    <p>这是一段正文内容，演示文本颜色和排版效果。<a href="#">这是一个链接</a>。</p>
+                    <code>console.log('这是一段代码');</code>
+                </div>
+                
+                <div class="preview-element">
+                    <FluentLabel>卡片元素</FluentLabel>
+                    <div class="card" style="padding: 12px; margin-top: 8px; min-width: 200px;">
+                        <h4 style="margin-top: 0;">卡片标题</h4>
+                        <p style="margin-bottom: 0;">卡片内容展示</p>
+                    </div>
+                </div>
+            </FluentStack>
+        </FluentStack>
+    </FluentStack>
+</FluentCard>
+
+<style>
+    .color-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid var(--neutral-stroke-divider-rest);
+    }
+    
+    .color-swatch:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .color-swatch.selected {
+        box-shadow: 0 0 0 2px var(--neutral-foreground-rest);
+        transform: scale(1.1);
+    }
+    
+    .preview-element {
+        flex: 1;
+    }
+    
+    @@media (max-width: 768px) {
+        .advanced-color-options {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+@code {
+    private DesignThemeModes _currentMode;
+    private OfficeColor? _currentColor;
+    private bool _initializing = true;
+    private bool _showAdvanced = false;
+    private string _customColorHex = "#1976D2";
+    
+    // 使用Icon类型存储主题图标映射
+    private readonly Dictionary<DesignThemeModes, Icon> _themeIcons = new()
+    {
+        { DesignThemeModes.Light, new Icons.Regular.Size20.WeatherSunny() },
+        { DesignThemeModes.Dark, new Icons.Regular.Size20.WeatherMoon() },
+        { DesignThemeModes.System, new Icons.Regular.Size20.Settings() }
+    };
+    
+    private readonly Dictionary<DesignThemeModes, string> _themeNames = new()
+    {
+        { DesignThemeModes.Light, "亮色模式" },
+        { DesignThemeModes.Dark, "暗色模式" },
+        { DesignThemeModes.System, "跟随系统" }
+    };
+
+    protected override void OnInitialized()
+    {
+        // 从主题服务加载初始设置
+        _currentMode = ThemeService.CurrentTheme.Mode;
+        _currentColor = ThemeService.CurrentTheme.BrandColor;
+        
+        if (ThemeService.CurrentTheme.CustomColorHex != null)
+        {
+            _customColorHex = ThemeService.CurrentTheme.CustomColorHex;
+        }
+        
+        _initializing = false;
+    }
+    
+    protected override void OnParametersSet()
+    {
+        // 组件设置变更时同步到主题服务
+        if (!_initializing)
+        {
+            _ = SyncThemeChangesAsync();
+        }
+    }
+    
+    private async Task SyncThemeChangesAsync()
+    {
+        if (_currentMode != ThemeService.CurrentTheme.Mode)
+        {
+            await ThemeService.SetThemeModeAsync(_currentMode);
+        }
+        
+        if (_currentColor != ThemeService.CurrentTheme.BrandColor)
+        {
+            await ThemeService.SetBrandColorAsync(_currentColor);
+        }
+    }
+
+    void OnThemeLoaded(LoadedEventArgs e)
+    {
+        // 主题加载完成事件处理
+    }
+
+    void OnLuminanceChanged(LuminanceChangedEventArgs e)
+    {
+        // 亮度变更事件处理
+    }
+    
+    private void ToggleAdvancedSettings()
+    {
+        _showAdvanced = !_showAdvanced;
+    }
+    
+    private async Task SelectOfficeColor(OfficeColor color)
+    {
+        _currentColor = color;
+        await ThemeService.SetBrandColorAsync(color);
+    }
+    
+    private async Task ApplyCustomColor()
+    {
+        if (IsValidHexColor(_customColorHex))
+        {
+            // 清除Office预设颜色
+            _currentColor = null;
+            
+            // 应用自定义颜色
+            await ThemeService.SetCustomColorAsync(_customColorHex);
+            
+            // 通过JavaScript应用颜色
+            await JSRuntime.InvokeVoidAsync("applyCustomPrimaryColor", _customColorHex);
+        }
+    }
+    
+    private async Task GenerateRandomColor()
+    {
+        var random = new Random();
+        byte[] rgb = new byte[3];
+        random.NextBytes(rgb);
+        
+        _customColorHex = $"#{rgb[0]:X2}{rgb[1]:X2}{rgb[2]:X2}";
+        await ApplyCustomColor();
+    }
+    
+    private async Task GenerateComplementaryScheme()
+    {
+        // 由JavaScript处理互补色方案
+        if (IsValidHexColor(_customColorHex))
+        {
+            await JSRuntime.InvokeVoidAsync("applyCustomPrimaryColor", _customColorHex);
+        }
+    }
+    
+    private async Task GenerateSplitComplementaryScheme()
+    {
+        if (IsValidHexColor(_customColorHex))
+        {
+            bool isDark = await ThemeService.IsDarkModeAsync();
+            await JSRuntime.InvokeVoidAsync("applyCustomPrimaryColor", _customColorHex, isDark);
+        }
+    }
+    
+    private async Task GenerateTriadicScheme()
+    {
+        if (IsValidHexColor(_customColorHex))
+        {
+            bool isDark = await ThemeService.IsDarkModeAsync();
+            await JSRuntime.InvokeVoidAsync("applyCustomPrimaryColor", _customColorHex, isDark);
+        }
+    }
+    
+    private async Task GenerateMonochromaticScheme()
+    {
+        if (IsValidHexColor(_customColorHex))
+        {
+            bool isDark = await ThemeService.IsDarkModeAsync();
+            await JSRuntime.InvokeVoidAsync("applyCustomPrimaryColor", _customColorHex, isDark);
+        }
+    }
+    
+    // 获取Office颜色对应的十六进制代码
+    private string GetOfficeColorCode(OfficeColor color)
+    {
+        return color switch
+        {
+            OfficeColor.Word => "#2B579A",
+            OfficeColor.Excel => "#217346",
+            OfficeColor.PowerPoint => "#B7472A", // 修正：PowerPoint 而非 Powerpoint
+            OfficeColor.Outlook => "#0068C3",
+            OfficeColor.Teams => "#6264A7",
+            OfficeColor.OneNote => "#782D86",
+            OfficeColor.SharePoint => "#038387",
+            OfficeColor.Planner => "#57727E",
+            _ => "#036AC4" // Default
+        };
+    }
+    
+    // 验证十六进制颜色格式
+    private bool IsValidHexColor(string hex)
+    {
+        if (string.IsNullOrWhiteSpace(hex)) return false;
+        
+        // 格式化为标准#RRGGBB格式
+        if (hex.StartsWith("#") && hex.Length == 7)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(
+                hex, "^#[0-9A-Fa-f]{6}$");
+        }
+        return false;
+    }
+    
+    // 获取主题模式对应的图标
+    private Icon GetThemeIcon(DesignThemeModes mode)
+    {
+        return _themeIcons.TryGetValue(mode, out var icon) ? icon : new Icons.Regular.Size20.Settings();
+    }
+    
+    // 获取主题模式的显示名称
+    private string GetThemeDisplayName(DesignThemeModes mode)
+    {
+        return _themeNames.TryGetValue(mode, out var name) ? name : mode.ToString();
+    }
+}

@@ -3,19 +3,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* 头像和ID之间的间距 */
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 /* 自定义长矩形头像容器样式 - 圆形设计 */
 .custom-square-avatar[b-vmw2uibslh] {
     position: relative;     /* 相对定位，使其子元素可以进行绝对定位 */
-    width: 300px;           /* 增大容器宽度 */
-    height: 300px;          /* 使容器成为正方形，更突出中间的头像 */
+    width: 60px;            /* 调整容器宽度 */
+    height: 60px;           /* 调整容器高度 */
     margin: 0 auto;         /* 上下边距为0，左右自动居中 */
-    transition: transform 0.5s ease, border-radius 0.7s ease; /* 添加平滑变换效果 */
-    border-radius: 50%;     /* 完全圆形的容器 */
-    overflow: visible;      /* 允许光环效果显示在容器外部 */
-    box-shadow: 0 0 25px 12px rgba(0, 16, 52, 0.35); /* 增强模糊阴影效果 */
+    transition: transform var(--transition-medium), border-radius var(--transition-slow); /* 使用全局过渡变量 */
+    border-radius: var(--container-border-radius);    /* 使用全局边框变量 */
+    overflow: hidden;       /* 确保内容不会超出边界 */
+    box-shadow: var(--blog-shadow-card); /* 使用全局阴影变量 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -32,9 +33,9 @@
     background: radial-gradient(
         circle at 50% 50%,   /* 创建以中心点为原点的圆形渐变 */
         transparent 30%,     /* 内部30%区域透明 */
-        rgb(172, 0, 66) 50%, /* 第一色：红色 */
-        rgb(83, 25, 78) 70%, /* 第二色：紫色 */
-        rgba(113, 0, 32, 0.4) 90%, /* 第三色：淡红色 */
+        var(--blog-accent-primary) 50%, /* 第一色：使用主题强调色 */
+        var(--blog-accent-secondary) 70%, /* 第二色：使用次要强调色 */
+        var(--blog-accent-tertiary) 90%, /* 第三色：使用第三强调色 */
         transparent 100%     /* 边缘透明 */
     );
     border-radius: 50%;     /* 完全圆形的光环 */
@@ -65,20 +66,20 @@
 /* 鼠标悬停在头像上时的效果 */
 .custom-square-avatar:hover[b-vmw2uibslh] {
     transform: scale(1.08); /* 鼠标悬停时将元素放大到原来的1.08倍 */
-    box-shadow: 0 0 35px 15px rgba(0, 81, 255, 0.45); /* 悬停时增强阴影效果 */
+    box-shadow: 0 0 35px 15px var(--blog-accent-primary); /* 使用主题强调色增强阴影效果 */
 }
 
 /* 头像图片样式 - 明显小于容器 */
 .custom-square-avatar img[b-vmw2uibslh] {
-    width: 250px;           /* 减小头像大小，与容器形成更明显的差异 */
-    height: 300px;
+    width: 100%;            /* 调整图片宽度 */
+    height: 100%;           /* 调整图片高度 */
     border-radius: 90%;     /* 圆形头像 */
     object-fit: cover;      /* 保持图片比例，覆盖整个容器，可能会裁剪图片 */
     overflow: hidden;       /* 确保图片内容不会超出边界 */
     position: relative;     /* 确保图片在z-index层叠上下文中正确定位 */
     z-index: 1;             /* 确保图片在光环效果上方 */
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* 为头像添加轻微阴影 */
-    border: 3px solid rgba(255, 255, 255, 0.3);    /* 添加柔和的边框 */
+    box-shadow: 0 0 10px var(--blog-bg-quaternary); /* 使用全局颜色变量为头像添加轻微阴影 */
+    border: 3px solid var(--blog-bg-quaternary);    /* 添加柔和的边框 */
 }
 
 /* 用户信息区域 */
@@ -87,43 +88,81 @@
     flex-direction: column;
     align-items: center;
     margin-top: 10px;
+    text-align: center;       /* 调整文本对齐方式 */
 }
 
 /* 用户名样式 */
 .user-name[b-vmw2uibslh] {
-    font-size: 28px;
-    color: rgb(118, 1, 1);           /* 文字颜色设置为白色 */
-    font-weight: bold;      /* 文字加粗显示 */
-    text-shadow: 0 0 3px rgba(172, 0, 66, 0.7); /* 添加文字阴影增强效果 */
+    font-size: 1.2rem;      /* 调整字体大小 */
+    font-weight: 600;       /* 调整字体粗细 */
+    color: var(--blog-text-primary);           /* 使用全局文本主色 */
+    text-shadow: 0 0 3px var(--blog-accent-primary); /* 使用主题强调色增强效果 */
 }
 
 /* 用户ID样式 */
 .user-id[b-vmw2uibslh] {
-    font-size: 20px;
-    color: rgba(182, 24, 24, 0.8); /* 半透明白色 */
+    font-size: 0.9rem;      /* 调整字体大小 */
+    color: var(--blog-text-secondary); /* 使用全局文本次色 */
     margin-top: 5px;
     font-style: italic;     /* 斜体 */
 }
 
 /* Header 容器样式 */
 .header-container[b-vmw2uibslh] {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 0;
+    position: relative;
+    background-color: var(--blog-bg-secondary);
+}
+
+/* 主题切换按钮容器样式 */
+.theme-toggle-container[b-vmw2uibslh] {
+    position: absolute;
+    top: 1.5rem;
+    right: 6rem;
+    z-index: 100;
+    background-color: var(--nav-bg-primary);
+    padding: 8px;
+    border-radius: var(--container-border-radius);
+    backdrop-filter: var(--nav-backdrop-filter);
+    box-shadow: var(--blog-shadow-card);
+    transition: all var(--transition-medium);
+}
+
+.theme-toggle-container:hover[b-vmw2uibslh] {
+    transform: translateY(-2px);
+    background-color: var(--nav-bg-hover);
+    box-shadow: var(--blog-shadow-popup);
 }
 
 /* 管理员设置菜单容器样式 */
 .admin-settings-container[b-vmw2uibslh] {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media (max-width: 600px) {
+    .header-container[b-vmw2uibslh] {
+        padding: 0 0.5rem;
+    }
+    
+    .theme-toggle-container[b-vmw2uibslh] {
+        right: 4rem;
+    }
+    
+    .admin-settings-container[b-vmw2uibslh] {
+        right: 0.5rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -133,20 +172,15 @@
     }
     
     .custom-square-avatar[b-vmw2uibslh] {
-        width: 200px;
-        height: 200px;
-    }
-    
-    .custom-square-avatar img[b-vmw2uibslh] {
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
     }
     
     .user-name[b-vmw2uibslh] {
-        font-size: 22px;
+        font-size: 18px;
     }
     
     .user-id[b-vmw2uibslh] {
-        font-size: 16px;
+        font-size: 14px;
     }
 }

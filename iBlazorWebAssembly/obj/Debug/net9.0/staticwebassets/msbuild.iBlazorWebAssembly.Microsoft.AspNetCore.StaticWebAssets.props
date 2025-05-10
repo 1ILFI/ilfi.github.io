@@ -12,8 +12,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>l64o1elkv8</Fingerprint>
-      <Integrity>0+vnqAsZ9WuFSHgBQVWf1eCzS1rb31uxwrjx24U1JIg=</Integrity>
+      <Fingerprint>gphn83dl0a</Fingerprint>
+      <Integrity>ZL3EwiP4CxBfXwZFoqubTZp+CEcyHkSa8cKIVd4vshg=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\app.css'))</OriginalItemSpec>
@@ -48,8 +48,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>h7trfbrjmz</Fingerprint>
-      <Integrity>nbcAymlrhacB7VIxUVB7pmutvLkQyo08LaLGhIHDW8g=</Integrity>
+      <Fingerprint>4mgjt9d8li</Fingerprint>
+      <Integrity>JFRY5LO6HFeJZZKqCjtrQ8mpjyd4x5FKwrDHnGjl1gE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\iBlazorWebAssembly.styles.css'))</OriginalItemSpec>
@@ -102,11 +102,47 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>rttmrkt0bb</Fingerprint>
-      <Integrity>f9ukL9Gs809jiLUj9Xs0iZpynhhXSjOfuTcZH6INsvM=</Integrity>
+      <Fingerprint>w6od9o8by0</Fingerprint>
+      <Integrity>SPtYZvpkakPiwJyi3t5V2+2lEmNBRNt7iG9jfygWFus=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\ColorManager.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>iBlazorWebAssembly</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>/</BasePath>
+      <RelativePath>js/ColorManager.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>svxy987qep</Fingerprint>
+      <Integrity>+GZd4N8xWh3ZOAlLMu6XwscJNKlOJfi41N7JYmwNolw=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\ColorManager.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\FileOperations.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>iBlazorWebAssembly</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>/</BasePath>
+      <RelativePath>js/FileOperations.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7khok1jch0</Fingerprint>
+      <Integrity>GSmZ9CRmZP+OwrJciqbrfcQO9rEEDSh/yvWKxTUfHOQ=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\FileOperations.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\NavMenuService.js'))">
       <SourceType>Package</SourceType>

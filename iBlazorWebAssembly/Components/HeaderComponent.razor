@@ -1,28 +1,51 @@
-@if (Visible)
-{
-    <FluentHeader 
+<FluentHeader 
     Style="height: 600px; 
-    background-color: rgb(18, 24, 42); 
-    color: rgb(156, 42, 42); 
-    text-align: center;">
+    background-color: var(--blog-bg-secondary);
+    color: var(--blog-text-primary); 
+    text-align: center;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;">
         <div class="header-container">
             <div class="avatar-section">
                 <div class="custom-square-avatar">
                     <img src="/images/me.png" alt="User Name" />
                 </div>
                 <div class="user-info">
-                    <div class="user-name">埃稗司•梵趿司</div>
+                    <div class="user-name">爱白•梵趿</div>
                     <div class="user-id">AbysFantas</div>
                 </div>
             </div>
-            <div class="admin-settings-container">
-                <AdminSettingsMenu />
+            
+            <!-- 主题切换容器增加了标题和提示信息 -->
+            <div class="theme-toggle-container" title="切换网站主题">
+                <FluentLabel Typo="Typography.Body" Style="color: var(--blog-text-primary); margin-bottom: 4px; font-size: 0.85rem;">主题设置</FluentLabel>
+                <ThemeToggle />
+                <FluentDivider Style="margin: 8px 0;" />
+                <FluentButton Appearance="Appearance.Stealth" 
+                             Style="color: var(--blog-text-primary);" 
+                             OnClick="@GoToThemeSettings">
+                    高级设置
+                </FluentButton>
             </div>
         </div>
     </FluentHeader>
-}
 
 @code {
     [Parameter]
     public bool Visible { get; set; } = true;
+    
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+    
+    private void GoToThemeSettings()
+    {
+        NavigationManager.NavigateTo("/BlogSettings");
+    }
 }
