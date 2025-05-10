@@ -169,24 +169,55 @@ namespace iBlazorWebAssembly.Services
         /// </summary>
         public async Task<string[]> GetFileListAsync(string path = "")
         {
+            // 确保 path 不是 null，如果是 null 则使用空字符串
+            path = path ?? string.Empty;
+            
             string logPath = string.IsNullOrEmpty(path) ? "根目录" : path;
             _logger?.LogInformation("获取文件列表: {Path}", logPath);
-            var github = await GetGitHubClientAsync();
             
             try
             {
-                // 处理空路径的情况 - 使用 null 表示根目录
-                // Octokit API 在处理 GetAllContentsByRef 时，空字符串会导致错误，而 null 表示根目录
-                var contents = await github.Repository.Content.GetAllContentsByRef(
-                    _repoOwner,
-                    _repoName,
-                    string.IsNullOrEmpty(path) ? null : path,
-                    _branch
-                );
+                var github = await GetGitHubClientAsync();
                 
-                var result = contents.Select(c => c.Path).ToArray();
-                _logger?.LogInformation("获取文件列表成功: {Count}个文件", result.Length);
-                return result;
+                try
+                {
+                    // 对于根目录，使用 null 作为路径参数
+                    // 对于其他目录，使用路径字符串
+                    // 这是 Octokit API 的特殊要求
+                    var contents = await github.Repository.Content.GetAllContentsByRef(
+                        _repoOwner,
+                        _repoName,
+                        string.IsNullOrEmpty(path) ? null : path,
+                        _branch
+                    );
+                    
+                    var result = contents.Select(c => c.Path).ToArray();
+                    _logger?.LogInformation("获取文件列表成功: {Count}个文件", result.Length);
+                    return result;
+                }
+                catch (Octokit.NotFoundException)
+                {
+                    // 仓库或路径不存在
+                    _logger?.LogWarning("仓库或路径不存在: {Owner}/{Repo}:{Path}", _repoOwner, _repoName, logPath);
+                    throw new Exception($"GitHub仓库或路径不存在: {_repoOwner}/{_repoName}:{logPath}");
+                }
+                catch (Octokit.AuthorizationException)
+                {
+                    // 授权错误，可能是访问令牌无效或已过期
+                    _logger?.LogError("GitHub访问令牌无效或已过期");
+                    throw new Exception("GitHub访问令牌无效或已过期，请更新令牌");
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, "获取GitHub文件列表失败: {Path}", logPath);
+                    throw new Exception($"获取GitHub文件列表失败: {ex.Message}", ex);
+                }
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("GitHub访问令牌未设置"))
+            {
+                // 访问令牌未设置
+                _logger?.LogError("GitHub访问令牌未设置");
+                throw new Exception("GitHub访问令牌未设置，请先在设置页面配置访问令牌");
             }
             catch (Exception ex)
             {

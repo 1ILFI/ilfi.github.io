@@ -26,7 +26,7 @@ applyTo: "**"
 
 - 元数据存储使用 Blazored.LocalStorage , OData 作为备用
 - 文档解析库使用 DocumentFormat.OpenXml 和微软 Markitdown
-- 文件托管使用 GitHub API 访问令牌 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 , 存储库 1IFLI/ilfi.github.io , 账户名 1ILFI 邮箱 <ILeroyFioriI@outlook.com>
+- 文件托管使用 GitHub API 访问令牌 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 , 存储库 1ILFI/ilfi.github.io , 账户名 1ILFI 邮箱 <ILeroyFioriI@outlook.com>
 - 使用 FluentUI Blazor 的上传组件
 
 
