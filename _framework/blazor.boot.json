@@ -1,12 +1,12 @@
 {
   "mainAssemblyName": "iBlazorWebAssembly",
   "resources": {
-    "hash": "sha256-pMGaLOgLbJSKJuBe2vAvIB7W6J3k5pmmGlBiC7uviYU=",
+    "hash": "sha256-jkB9XY2STktpWhRQ96g4PO7i7B7O2DaJ8tt4rNU8QT4=",
     "fingerprinting": {
       "Blazored.LocalStorage.12n6dz54qr.wasm": "Blazored.LocalStorage.wasm",
       "DocumentFormat.OpenXml.Framework.ym1pyx9qu4.wasm": "DocumentFormat.OpenXml.Framework.wasm",
       "DocumentFormat.OpenXml.j2pni4hm2y.wasm": "DocumentFormat.OpenXml.wasm",
-      "iBlazorWebAssembly.7ez11phqly.wasm": "iBlazorWebAssembly.wasm",
+      "iBlazorWebAssembly.e704n7nabn.wasm": "iBlazorWebAssembly.wasm",
       "Markdig.8m8q17eux9.wasm": "Markdig.wasm",
       "Microsoft.ApplicationInsights.i7qpjcp04n.wasm": "Microsoft.ApplicationInsights.wasm",
       "Microsoft.AspNetCore.Components.Forms.f526gi6ibm.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
@@ -170,7 +170,7 @@
       "Blazored.LocalStorage.12n6dz54qr.wasm": "sha256-OaMAAd5n7ORfyur5e3QIyEVKJ76MKIvwbg7/icnnYcU=",
       "DocumentFormat.OpenXml.Framework.ym1pyx9qu4.wasm": "sha256-imqQ1X1TPrgXbe9ekcbbyDB6QyUzAWR4hGspgXUW3Jc=",
       "DocumentFormat.OpenXml.j2pni4hm2y.wasm": "sha256-q1Cc2iPs92YooS3G5FtrvK/cSY8G2tEUYLrNdhOFX6Q=",
-      "iBlazorWebAssembly.7ez11phqly.wasm": "sha256-b540jz7Uihpcl6idE+5rrWI8sSmQ/3GA/y3XAkjwDTg=",
+      "iBlazorWebAssembly.e704n7nabn.wasm": "sha256-9kKlqZvbAIzkCgqU7eUkAb1wlNCzw1aBd4mja4xjXNc=",
       "Markdig.8m8q17eux9.wasm": "sha256-4NRl6Uv3KMSWq86K58aRc0myM/vF0kILqNdUqpOTXdw=",
       "Microsoft.ApplicationInsights.i7qpjcp04n.wasm": "sha256-7oMhZAKcl65Z2CfhtItCU9YC2Krd2qk4apikSwTEVbM=",
       "Microsoft.AspNetCore.Components.Forms.f526gi6ibm.wasm": "sha256-Y8jLBl0RQehL00obX1dUvI3hMQRK6rxv6bN/V4NWEi0=",
