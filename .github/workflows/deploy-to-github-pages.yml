@@ -38,6 +38,13 @@ jobs:
       - name: 发布应用
         run: dotnet publish iBlazorWebAssembly/iBlazorWebAssembly.csproj -c Release -o publish
         
+      - name: 修改发布的 index.html
+        run: |
+          sed -i 's|<base href="/" />|<base href="./" />|g' publish/wwwroot/index.html
+          
+      - name: 添加 .nojekyll 文件
+        run: touch publish/wwwroot/.nojekyll
+        
       - name: 设置GitHub Pages
         uses: actions/configure-pages@v3
         
