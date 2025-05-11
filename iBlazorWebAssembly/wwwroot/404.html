@@ -2,18 +2,16 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>个人博客 - 重定向中</title>
+    <title>重定向中</title>
     <script type="text/javascript">
-        // 获取当前URL的路径部分
+        // 单页应用路由处理
         var pathSegmentsToKeep = 0;
         var l = window.location;
         var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '');
         var path = l.pathname.split('/');
         
         // GitHub Pages项目站点通常位于子目录下
-        // pathSegmentsToKeep表示保留的路径段数
-        // 对于GitHub Pages上的个人站点，通常设为0
-        // 对于GitHub Pages上的项目站点，通常设为1
+        // 对于个人站点，通常设为0
         path = path.slice(0, 1 + pathSegmentsToKeep);
         redirectUrl += path.join('/') + '/?p=/';
         
