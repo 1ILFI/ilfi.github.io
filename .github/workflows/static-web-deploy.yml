@@ -1,0 +1,70 @@
+name: 部署 Blazor WebAssembly 到 GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# 设置权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 允许一个并发部署
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # 构建任务
+  build:
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      # 检出代码
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # 设置 .NET SDK
+      - name: 设置 .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      # 恢复依赖项
+      - name: 恢复依赖项
+        run: dotnet restore
+
+      # 发布应用 - 直接发布到 wwwroot 目录
+      - name: 发布 Blazor WebAssembly 应用
+        run: |
+          dotnet publish iBlazorWebAssembly/iBlazorWebAssembly.csproj -c Release -o release --nologo
+
+      # 配置 base 标签和特殊文件
+      - name: 配置 GitHub Pages 特殊文件
+        run: |
+          # 修改 base 标签
+          sed -i 's|<base href="/" />|<base href="./" />|g' release/wwwroot/index.html
+          # 添加 .nojekyll 文件
+          touch release/wwwroot/.nojekyll
+          # 添加重定向规则
+          echo '/* /index.html 200' > release/wwwroot/_redirects
+
+      # 配置 Pages
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v3
+
+      # 创建文件压缩包，避免使用upload-pages-artifact和upload-artifact依赖项
+      - name: 创建部署包
+        run: |
+          cd release/wwwroot
+          zip -r ../../github-pages.zip .
+
+      # 直接使用GitHub CLI上传并部署Pages
+      - name: 部署到GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pages deploy --dir release/wwwroot --branch gh-pages
