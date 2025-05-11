@@ -2,22 +2,19 @@ name: 部署到GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]  # 当推送到main分支时触发
-  workflow_dispatch:      # 允许从GitHub UI手动触发
+    branches: [ "main" ]
+  workflow_dispatch:
 
-# 设置GITHUB_TOKEN的权限
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 允许一个并发部署
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
-  # 构建作业
   build:
     runs-on: ubuntu-latest
     steps:
@@ -38,36 +35,26 @@ jobs:
       - name: 发布应用
         run: dotnet publish iBlazorWebAssembly/iBlazorWebAssembly.csproj -c Release -o publish
         
-      - name: 修改发布的 index.html
+      - name: 准备发布目录
         run: |
           sed -i 's|<base href="/" />|<base href="./" />|g' publish/wwwroot/index.html
-          
-      - name: 添加 .nojekyll 文件
-        run: touch publish/wwwroot/.nojekyll
+          touch publish/wwwroot/.nojekyll
         
       - name: 设置GitHub Pages
-        uses: actions/configure-pages@v3
-        
-      # 添加明确版本的upload-artifact动作，作为依赖项
-      - name: 上传构建产物备份
-        uses: actions/upload-artifact@v3
-        with:
-          name: webapp-build
-          path: publish/wwwroot
-        
-      - name: 上传构建产物到Pages
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/configure-pages@v4
+      
+      - name: 上传Pages构建产物
+        uses: actions/upload-pages-artifact@v3
         with:
           path: publish/wwwroot
 
-  # 部署作业
   deploy:
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: 部署到GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
