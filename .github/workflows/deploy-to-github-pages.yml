@@ -48,7 +48,14 @@ jobs:
       - name: 设置GitHub Pages
         uses: actions/configure-pages@v3
         
-      - name: 上传构建产物
+      # 添加明确版本的upload-artifact动作，作为依赖项
+      - name: 上传构建产物备份
+        uses: actions/upload-artifact@v3
+        with:
+          name: webapp-build
+          path: publish/wwwroot
+        
+      - name: 上传构建产物到Pages
         uses: actions/upload-pages-artifact@v2
         with:
           path: publish/wwwroot
