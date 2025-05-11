@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>个人博客 - 重定向中</title>
+    <script type="text/javascript">
+        // 获取当前URL的路径部分
+        var pathSegmentsToKeep = 0;
+        var l = window.location;
+        var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '');
+        var path = l.pathname.split('/');
+        
+        // GitHub Pages项目站点通常位于子目录下
+        // pathSegmentsToKeep表示保留的路径段数
+        // 对于GitHub Pages上的个人站点，通常设为0
+        // 对于GitHub Pages上的项目站点，通常设为1
+        path = path.slice(0, 1 + pathSegmentsToKeep);
+        redirectUrl += path.join('/') + '/?p=/';
+        
+        // 添加URL中的路径和查询字符串
+        var pathname = l.pathname.slice(1);
+        if (pathname !== '') {
+            redirectUrl += pathname;
+        }
+        if (l.search && l.search.length > 0) {
+            redirectUrl += l.search;
+        }
+        if (l.hash && l.hash.length > 0) {
+            redirectUrl += l.hash;
+        }
+        
+        window.location.replace(redirectUrl);
+    </script>
+</head>
+<body>
+    <h2>正在重定向...</h2>
+    <p>如果页面没有自动跳转，请<a href="/">点击这里</a>返回首页。</p>
+</body>
+</html>
